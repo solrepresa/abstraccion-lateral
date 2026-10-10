@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Abstracción lateral</title>
+<meta name="description" content="Seis artefactos pedagógicos que desplazan conceptos de la ciencia de datos hacia el arte, la filosofía y la cultura. Introducción a la Ciencia de Datos · UCA · 2026.">
+<meta name="author" content="Soledad Represa">
+<meta property="og:title" content="Abstracción lateral">
+<meta property="og:description" content="Seis artefactos pedagógicos que desplazan conceptos de la ciencia de datos hacia el arte, la filosofía y la cultura.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0c;
+    --fg: #e8e4df;
+    --fg-soft: rgba(232,228,223,0.66);
+    --accent: #c5f467;
+    --warm: #f2a65a;
+    --cool: #7eb8da;
+    --rose: #e07a8e;
+    --violet: #9b8ec4;
+    --red: #E63946;
+    --muted: #8a8792;
+    --card-bg: #141418;
+    --card-border: #2a2a30;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    font-size: 17px;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  a { color: inherit; }
+
+  /* HERO */
+  .hero {
+    min-height: 92vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 5rem 1.5rem 4rem;
+    max-width: 1080px; margin: 0 auto;
+    position: relative;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 50% 45% at 15% 35%, rgba(197,244,103,0.07), transparent 70%),
+      radial-gradient(ellipse 45% 50% at 85% 70%, rgba(155,142,196,0.08), transparent 70%);
+  }
+  .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    animation: fadeUp .7s .1s both;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    font-size: clamp(3rem, 10vw, 7.5rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    animation: fadeUp .8s .25s both;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+  .hero h1 .plus { color: var(--muted); font-weight: 400; }
+  .hero-sub {
+    max-width: 600px;
+    margin-top: 2rem;
+    font-size: 1.15rem;
+    color: var(--fg-soft);
+    animation: fadeUp .8s .4s both;
+  }
+  .hero-meta {
+    margin-top: 2.5rem;
+    display: flex; flex-wrap: wrap; gap: .6rem;
+    animation: fadeUp .8s .55s both;
+  }
+  .pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem; letter-spacing: .12em; text-transform: uppercase;
+    border: 1px solid var(--card-border);
+    border-radius: 999px;
+    padding: .35rem .9rem;
+    color: var(--muted);
+  }
+  .author {
+    margin-top: 2rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .78rem; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted);
+    animation: fadeUp .8s .6s both;
+  }
+  .author strong { color: var(--fg); font-weight: 500; }
+  .hero-cta {
+    margin-top: 3rem;
+    display: inline-flex; align-items: center; gap: .6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .72rem; letter-spacing: .15em; text-transform: uppercase;
+    color: var(--bg); background: var(--accent);
+    padding: .85rem 1.5rem; border-radius: 999px;
+    text-decoration: none; align-self: flex-start;
+    transition: transform .2s;
+    animation: fadeUp .8s .7s both;
+  }
+  .hero-cta:hover { transform: translateY(-2px); }
+
+  /* SECTIONS */
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 1.5rem; }
+  .section { padding: 5rem 0; }
+  .label {
+    display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;
+  }
+  .label span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: .65rem; letter-spacing: .22em; text-transform: uppercase;
+    color: var(--accent); white-space: nowrap;
+  }
+  .label::after { content: ''; flex: 1; height: 1px; background: var(--card-border); }
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 4.5vw, 3rem);
+    line-height: 1.15; font-weight: 700;
+    margin-bottom: 1.25rem;
+  }
+  h2 em { font-style: italic; color: var(--accent); }
+  .lead { color: var(--fg-soft); max-width: 680px; font-size: 1.05rem; }
+
+  /* PROPUESTA */
+  .pillars {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem;
+    margin-top: 2.5rem;
+  }
+  .pillar {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 12px; padding: 1.5rem;
+  }
+  .pillar .k {
+    font-family: 'JetBrains Mono', monospace; font-size: .62rem;
+    letter-spacing: .15em; text-transform: uppercase; color: var(--muted);
+    display: block; margin-bottom: .5rem;
+  }
+  .pillar h3 {
+    font-family: 'Playfair Display', serif; font-size: 1.2rem;
+    font-weight: 700; margin-bottom: .4rem;
+  }
+  .pillar p { font-size: .93rem; color: var(--fg-soft); }
+
+  /* UNIT CARDS */
+  .units {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem;
+  }
+  .unit {
+    --c: var(--accent);
+    position: relative;
+    display: flex; flex-direction: column;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 2rem 1.75rem 1.6rem;
+    text-decoration: none; color: var(--fg);
+    overflow: hidden;
+    transition: border-color .25s, transform .25s;
+  }
+  .unit::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--c); opacity: .85;
+  }
+  .unit:hover, .unit:focus-visible { border-color: var(--c); transform: translateY(-3px); outline: none; }
+  .unit-top {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 1.25rem;
+  }
+  .unit-num {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 3.2rem; line-height: 1; color: var(--c);
+  }
+  .unit-ref {
+    font-family: 'JetBrains Mono', monospace; font-size: .62rem;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+    text-align: right; max-width: 60%;
+  }
+  .unit h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.65rem; line-height: 1.2; font-weight: 700;
+    margin-bottom: .75rem;
+  }
+  .unit h3 em { font-style: italic; color: var(--c); }
+  .unit p { font-size: .95rem; color: var(--fg-soft); margin-bottom: 1.25rem; }
+  .unit-q {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 1rem; color: var(--fg);
+    border-left: 2px solid var(--c);
+    padding-left: .9rem; margin-bottom: 1.5rem;
+  }
+  .unit-foot {
+    margin-top: auto;
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    padding-top: 1.1rem; border-top: 1px solid var(--card-border);
+  }
+  .topics { display: flex; flex-wrap: wrap; gap: .4rem; }
+  .topics span {
+    font-family: 'JetBrains Mono', monospace; font-size: .58rem;
+    letter-spacing: .1em; text-transform: uppercase;
+    color: var(--muted); border: 1px solid var(--card-border);
+    border-radius: 999px; padding: .2rem .6rem;
+  }
+  .go {
+    font-family: 'JetBrains Mono', monospace; font-size: .68rem;
+    letter-spacing: .12em; text-transform: uppercase; color: var(--c);
+    white-space: nowrap;
+  }
+  .unit:hover .go { text-decoration: underline; text-underline-offset: 4px; }
+
+  /* ESTRUCTURA */
+  .steps {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    background: var(--card-border); border: 1px solid var(--card-border);
+    border-radius: 12px; overflow: hidden; margin-top: 2.5rem;
+  }
+  .step { background: var(--card-bg); padding: 1.5rem 1.25rem; }
+  .step .n {
+    font-family: 'JetBrains Mono', monospace; font-size: .62rem;
+    color: var(--accent); letter-spacing: .12em; display: block; margin-bottom: .6rem;
+  }
+  .step h4 { font-family: 'Playfair Display', serif; font-size: 1.05rem; margin-bottom: .35rem; }
+  .step p { font-size: .88rem; color: var(--fg-soft); }
+
+  /* QUOTE */
+  .quote { text-align: center; padding: 4.5rem 0; }
+  .quote blockquote {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: clamp(1.4rem, 3.4vw, 2.3rem); line-height: 1.4;
+    max-width: 760px; margin: 0 auto;
+  }
+  .quote cite {
+    display: block; margin-top: 1.25rem;
+    font-family: 'JetBrains Mono', monospace; font-style: normal;
+    font-size: .62rem; letter-spacing: .2em; text-transform: uppercase; color: var(--muted);
+  }
+
+
+  /* LOOP (abstracción lateral) */
+  .loop {
+    display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: .75rem;
+    align-items: stretch; margin-top: 2.5rem;
+  }
+  .loop-step {
+    background: var(--card-bg); border: 1px solid var(--card-border);
+    border-radius: 12px; padding: 1.5rem 1.25rem;
+  }
+  .loop-step.mid { border-color: rgba(197,244,103,0.35); background: rgba(197,244,103,0.04); transform: translateY(-14px); }
+  .loop-step .n {
+    font-family: 'JetBrains Mono', monospace; font-size: .62rem;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--accent);
+    display: block; margin-bottom: .6rem;
+  }
+  .loop-step h4 { font-family: 'Playfair Display', serif; font-size: 1.15rem; margin-bottom: .35rem; }
+  .loop-step p { font-size: .9rem; color: var(--fg-soft); }
+  .loop-arrow { align-self: center; color: var(--muted); font-size: 1.3rem; }
+
+  /* SHIFT (desplazamiento) */
+  .shift {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: .35rem .55rem;
+    font-family: 'JetBrains Mono', monospace; font-size: .68rem;
+    letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 1rem;
+  }
+  .shift b { color: var(--c); font-weight: 500; }
+  .shift span:last-child { color: var(--c); }
+  .kind {
+    font-family: 'JetBrains Mono', monospace; font-size: .6rem;
+    letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  }
+
+  footer {
+    border-top: 1px solid var(--card-border);
+    margin-top: 4rem;
+  }
+  .foot {
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem;
+    padding: 2rem 0;
+    font-family: 'JetBrains Mono', monospace; font-size: .62rem;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--muted); line-height: 1.9;
+  }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+
+  @media (max-width: 860px) {
+    .units { grid-template-columns: 1fr; }
+    .pillars { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .loop { grid-template-columns: 1fr; }
+    .loop-arrow { transform: rotate(90deg); justify-self: center; }
+    .loop-step.mid { transform: none; }
+  }
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    .hero { padding: 4rem 1rem 3rem; min-height: auto; }
+    .wrap { padding: 0 1rem; }
+    .section { padding: 3.5rem 0; }
+    .unit { padding: 1.75rem 1.25rem 1.4rem; }
+    .unit-num { font-size: 2.6rem; }
+    .steps { grid-template-columns: 1fr; }
+    .unit-foot { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <p class="tag">Experiencia pedagógica · Introducción a la Ciencia de Datos · UCA · 2026</p>
+  <h1>Abstracción<br><em>lateral</em></h1>
+  <p class="hero-sub">Seis artefactos pedagógicos que desplazan conceptos de la ciencia de datos hacia el arte, la filosofía y la cultura, para que vuelvan al dominio técnico con nuevas preguntas.</p>
+  <div class="hero-meta">
+    <span class="pill">Primer año · primer semestre</span>
+    <span class="pill">6 artefactos</span>
+    <span class="pill">Complementarios y electivos</span>
+    <span class="pill">Interactivos</span>
+  </div>
+  <p class="author">Por <strong>Soledad Represa</strong></p>
+  <a class="hero-cta" href="#artefactos">Ver los artefactos ↓</a>
+</header>
+
+<main>
+
+  <!-- CONTEXTO -->
+  <section class="section">
+    <div class="wrap">
+      <div class="label"><span>El problema</span></div>
+      <h2>Una formación fragmentada,<br><em>en tiempos de IA generativa</em></h2>
+      <p class="lead">La formación universitaria en ciencia de datos se inscribe en una tradición de especialización disciplinar, que separa los saberes técnicos, humanísticos y artísticos. La inteligencia artificial generativa ya puede asistir o automatizar buena parte del aprendizaje técnico, y eso abre una pregunta: ¿qué capacidades deberían ocupar el centro de la formación?</p>
+
+      <div class="pillars">
+        <div class="pillar">
+          <span class="k">01</span>
+          <h3>Complementarios</h3>
+          <p>Cada artefacto funciona como cierre de una unidad y acompaña sus contenidos técnicos.</p>
+        </div>
+        <div class="pillar">
+          <span class="k">02</span>
+          <h3>Electivos</h3>
+          <p>Se recorren por interés, no por obligación. Son un espacio abierto a la curiosidad.</p>
+        </div>
+        <div class="pillar">
+          <span class="k">03</span>
+          <h3>Fuera de la evaluación</h3>
+          <p>No forman parte de la evaluación formal. Buscan una relación con el saber técnico que no sea solo instrumental.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABSTRACCIÓN LATERAL -->
+  <section class="section" style="padding-top:1rem">
+    <div class="wrap">
+      <div class="label"><span>La idea</span></div>
+      <h2>Salir hacia el costado<br><em>para volver con preguntas</em></h2>
+      <p class="lead">Los conceptos se desplazan por un tiempo hacia otro régimen de conocimiento. Ahí se los interroga, y después regresan al dominio técnico transformados.</p>
+      <div class="loop">
+        <div class="loop-step">
+          <span class="n">01 · Dominio técnico</span>
+          <h4>Un concepto de la materia</h4>
+          <p>Dato, sesgo, visualización, modelo, inferencia.</p>
+        </div>
+        <div class="loop-arrow" aria-hidden="true">→</div>
+        <div class="loop-step mid">
+          <span class="n">02 · Desplazamiento</span>
+          <h4>Arte, filosofía, cultura</h4>
+          <p>Una obra o una tradición de pensamiento lo interroga desde otro lugar.</p>
+        </div>
+        <div class="loop-arrow" aria-hidden="true">→</div>
+        <div class="loop-step">
+          <span class="n">03 · Regreso</span>
+          <h4>Nuevas preguntas</h4>
+          <p>El concepto vuelve a la técnica cargado de preguntas que antes no tenía.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ARTEFACTOS -->
+  <section class="section" id="artefactos" style="padding-top:1rem">
+    <div class="wrap">
+      <div class="label"><span>Los artefactos</span></div>
+      <h2>Seis <em>desplazamientos</em></h2>
+      <p class="lead" style="margin-bottom:2.5rem">Cada tarjeta abre el artefacto completo. Los cuatro primeros mueven la mirada sobre el dato y los sistemas. Los dos últimos se adentran en la dimensión epistemológica del modelo.</p>
+
+      <div class="units">
+
+        <a class="unit" href="unidades/u1-google-maps-hacks.html" style="--c: var(--red)">
+          <div class="unit-top">
+            <span class="unit-num">01</span>
+            <span class="unit-ref">Simon Weckert<br>Google Maps Hacks · 2020</span>
+          </div>
+          <div class="shift"><span>Del dato</span><b>→</b><span>a aquello que representa</span></div>
+          <h3>99 celulares. <em>Cero</em> autos.</h3>
+          <p>Problematiza la relación entre dato y realidad: cómo las decisiones sobre qué medir, representar u optimizar producen efectos sobre el mundo.</p>
+          <div class="unit-foot"><span class="kind">Artefacto 01</span><span class="go">Abrir →</span></div>
+        </a>
+
+        <a class="unit" href="unidades/u2-la-era-del-entrelazamiento.html" style="--c: var(--cool)">
+          <div class="unit-top">
+            <span class="unit-num">02</span>
+            <span class="unit-ref">Neri Oxman<br>Krebs Cycle of Creativity</span>
+          </div>
+          <div class="shift"><span>De la disciplina</span><b>→</b><span>a sus fronteras</span></div>
+          <h3>La era del <em>entrelazamiento</em></h3>
+          <p>Introduce la pregunta por quién construye los sistemas: con qué saberes, con qué criterios y para qué propósitos.</p>
+          <div class="unit-foot"><span class="kind">Artefacto 02</span><span class="go">Abrir →</span></div>
+        </a>
+
+        <a class="unit" href="unidades/u3-quien-decide-quien-es-el-mejor.html" style="--c: var(--warm)">
+          <div class="unit-top">
+            <span class="unit-num">03</span>
+            <span class="unit-ref">Survival of the Best Fit<br>Obra interactiva · 2019</span>
+          </div>
+          <div class="shift"><span>Del sesgo estadístico</span><b>→</b><span>a la responsabilidad sobre las decisiones</span></div>
+          <h3>¿Quién decide <em>quién es el mejor?</em></h3>
+          <p>Desplaza el problema del sesgo, de su identificación estadística a las decisiones humanas que intervienen en la construcción de sistemas algorítmicos.</p>
+          <div class="unit-foot"><span class="kind">Artefacto 03</span><span class="go">Abrir →</span></div>
+        </a>
+
+        <a class="unit" href="unidades/u4-ver-datos-ver-personas.html" style="--c: var(--rose)">
+          <div class="unit-top">
+            <span class="unit-num">04</span>
+            <span class="unit-ref">Giorgia Lupi · Data Humanism<br>Manovich · Anadol</span>
+          </div>
+          <div class="shift"><span>De la objetividad</span><b>→</b><span>a la experiencia situada</span></div>
+          <h3>Ver datos, <em>ver personas</em></h3>
+          <p>Recupera, a través de prácticas artísticas basadas en datos, la dimensión humana y situada del dato.</p>
+          <div class="unit-foot"><span class="kind">Artefacto 04</span><span class="go">Abrir →</span></div>
+        </a>
+
+        <a class="unit" href="unidades/u5-el-modelo-no-es-la-realidad.html" style="--c: var(--accent)">
+          <div class="unit-top">
+            <span class="unit-num">05</span>
+            <span class="unit-ref">Magritte · Foucault<br>Mapa y territorio</span>
+          </div>
+          <div class="shift"><span>Del modelo como procedimiento</span><b>→</b><span>a la representación parcial</span></div>
+          <h3>El modelo no es <em>la realidad</em></h3>
+          <p>Aborda el modelo como representación parcial e introduce la distinción entre modelos determinísticos y estocásticos como decisiones sobre cómo representar la incertidumbre.</p>
+          <div class="unit-foot"><span class="kind">Dimensión epistemológica</span><span class="go">Abrir →</span></div>
+        </a>
+
+        <a class="unit" href="unidades/u6-representar-lo-invisible.html" style="--c: var(--violet)">
+          <div class="unit-top">
+            <span class="unit-num">06</span>
+            <span class="unit-ref">Wassily Kandinsky<br>1866–1944</span>
+          </div>
+          <div class="shift"><span>De lo observable</span><b>→</b><span>a las estructuras que no se ven</span></div>
+          <h3>Representar <em>lo invisible</em></h3>
+          <p>Acompaña la introducción al modelado estadístico e interroga la operación de inferir, a partir de datos observables, estructuras subyacentes que no son directamente accesibles.</p>
+          <div class="unit-foot"><span class="kind">Dimensión epistemológica</span><span class="go">Abrir →</span></div>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div class="quote">
+      <blockquote>“No se trata de enseñar menos técnica ni de humanizarla desde afuera, sino de formar científicos de datos capaces de comprender que toda decisión técnica contribuye a forjar el mundo.”</blockquote>
+      <cite>Soledad Represa</cite>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div>Introducción a la Ciencia de Datos · UCA · 2026<br>Abstracción lateral · Artefactos pedagógicos</div>
+    <div>Autora: Soledad Represa</div>
+  </div>
+</footer>
+
+</body>
+</html>

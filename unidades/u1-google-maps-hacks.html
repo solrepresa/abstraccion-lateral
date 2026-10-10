@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Maps Hacks — Simon Weckert | Cierre Unidad 1</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red: #E63946;
+  --green: #2D6A4F;
+  --dark: #0D1117;
+  --almost-dark: #161B22;
+  --mid: #21262D;
+  --light-text: #C9D1D9;
+  --muted: #8B949E;
+  --accent: #58A6FF;
+  --warm: #F4A261;
+  --surface: #0D1117;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--dark);
+  color: var(--light-text);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+/* ============ HERO ============ */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: 
+    radial-gradient(ellipse at 20% 50%, rgba(230,57,70,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 50%, rgba(45,106,79,0.08) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 2rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.2s forwards;
+}
+
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(2.8rem, 7vw, 5.5rem);
+  line-height: 1.1;
+  color: #fff;
+  max-width: 800px;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.4s forwards;
+}
+
+.hero h1 .highlight-red {
+  color: var(--red);
+  font-style: italic;
+}
+
+.hero h1 .highlight-green {
+  color: var(--green);
+}
+
+.hero-sub {
+  font-size: 1.15rem;
+  color: var(--muted);
+  max-width: 520px;
+  margin-top: 1.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.6s forwards;
+}
+
+.hero-artist {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--accent);
+  margin-top: 2.5rem;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 0.8s forwards;
+}
+
+.hero-artist a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(88,166,255,0.3);
+  transition: border-color 0.3s;
+}
+.hero-artist a:hover { border-color: var(--accent); }
+
+.scroll-hint {
+  position: absolute;
+  bottom: 2rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+  opacity: 0;
+  animation: fadeUp 0.8s ease 1s forwards, pulse 2s ease-in-out 2s infinite;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 1; }
+}
+
+/* ============ SECTIONS ============ */
+section {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 5rem 2rem;
+}
+
+.section-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 1rem;
+  display: block;
+}
+
+h2 {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  color: #fff;
+  line-height: 1.2;
+  margin-bottom: 1.5rem;
+}
+
+p { margin-bottom: 1.2rem; font-size: 1.05rem; }
+
+.lead {
+  font-size: 1.25rem;
+  color: #fff;
+  font-weight: 300;
+}
+
+/* ============ VIDEO THUMBNAIL ============ */
+.video-container {
+  position: relative;
+  width: 100%;
+  max-width: 820px;
+  margin: 3rem auto;
+  padding: 0 2rem;
+}
+
+.video-link {
+  display: block;
+  text-decoration: none;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s;
+}
+.video-link:hover { transform: scale(1.01); }
+
+.video-thumb {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16/9;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: var(--almost-dark);
+}
+
+.video-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.85;
+  transition: opacity 0.3s;
+}
+.video-link:hover .video-thumb img { opacity: 1; }
+
+.play-overlay {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0.9;
+  transition: opacity 0.3s, transform 0.3s;
+}
+.video-link:hover .play-overlay {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+
+.video-caption {
+  display: block;
+  text-align: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-top: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+/* ============ QUOTE BLOCK ============ */
+.quote-block {
+  border-left: 3px solid var(--red);
+  padding: 1.5rem 2rem;
+  margin: 2.5rem 0;
+  background: rgba(230,57,70,0.04);
+  border-radius: 0 8px 8px 0;
+}
+
+.quote-block p {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem;
+  font-style: italic;
+  color: #fff;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ============ TRAFFIC LIGHT METAPHOR ============ */
+.traffic-vis {
+  display: flex;
+  gap: 2rem;
+  margin: 3rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.traffic-card {
+  flex: 1;
+  min-width: 220px;
+  max-width: 340px;
+  background: var(--almost-dark);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 12px;
+  padding: 2rem;
+  text-align: center;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.traffic-card:hover {
+  transform: translateY(-4px);
+}
+
+.traffic-card.green { border-top: 3px solid var(--green); }
+.traffic-card.red { border-top: 3px solid var(--red); }
+
+.traffic-icon {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+
+.traffic-card h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.2rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.traffic-card p {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 0;
+}
+
+/* ============ INSIGHT BOXES ============ */
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.2rem;
+  margin: 2.5rem 0;
+}
+
+.insight-box {
+  background: var(--almost-dark);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 1.5rem;
+}
+
+.insight-box .tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--warm);
+  margin-bottom: 0.6rem;
+  display: block;
+}
+
+.insight-box p {
+  font-size: 0.95rem;
+  margin: 0;
+  color: var(--light-text);
+}
+
+/* ============ INTERACTIVE: DEVELOPER POV ============ */
+.dev-section {
+  background: var(--almost-dark);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 16px;
+  padding: 3rem 2.5rem;
+  margin: 3rem 0;
+}
+
+.dev-section h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.dev-prompt {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 2rem;
+}
+
+.scenario {
+  margin-bottom: 2.5rem;
+}
+
+.scenario-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.8rem;
+  display: block;
+}
+
+.scenario-q {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 1.2rem;
+  font-weight: 500;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.option-btn {
+  background: var(--mid);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  padding: 1rem 1.2rem;
+  color: var(--light-text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-align: left;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+
+.option-btn:hover {
+  border-color: rgba(255,255,255,0.2);
+  background: rgba(33,38,45,0.8);
+}
+
+.option-btn.selected {
+  border-color: var(--accent);
+  background: rgba(88,166,255,0.08);
+}
+
+.option-btn.selected::before {
+  content: '✓';
+  position: absolute;
+  right: 1rem;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.consequence {
+  display: none;
+  margin-top: 1rem;
+  padding: 1.2rem;
+  background: rgba(230,57,70,0.06);
+  border-left: 3px solid var(--warm);
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.consequence.visible {
+  display: block;
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.consequence .con-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--warm);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+
+/* ============ CONNECTION TO U1 ============ */
+.connection-banner {
+  background: linear-gradient(135deg, rgba(45,106,79,0.1) 0%, rgba(88,166,255,0.08) 100%);
+  border: 1px solid rgba(88,166,255,0.12);
+  border-radius: 12px;
+  padding: 2rem;
+  margin: 3rem 0;
+}
+
+.connection-banner h3 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.3rem;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+.conn-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.conn-list li {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+  font-size: 0.95rem;
+}
+
+.conn-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: rgba(88,166,255,0.1);
+  color: var(--accent);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 0.2rem;
+}
+
+/* ============ DIVIDER ============ */
+.divider {
+  width: 60px;
+  height: 1px;
+  background: rgba(255,255,255,0.1);
+  margin: 4rem auto;
+}
+
+/* ============ FOOTER ============ */
+.footer {
+  text-align: center;
+  padding: 3rem 2rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.1em;
+}
+
+.footer a {
+  color: var(--accent);
+  text-decoration: none;
+}
+
+/* ============ COUNTER DISPLAY ============ */
+.counter-strip {
+  display: flex;
+  justify-content: center;
+  gap: 3rem;
+  margin: 3rem 0;
+  flex-wrap: wrap;
+}
+
+.counter-item {
+  text-align: center;
+}
+
+.counter-num {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.5rem;
+  color: var(--red);
+  line-height: 1;
+}
+
+.counter-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-top: 0.4rem;
+}
+
+/* ============ SOURCES ============ */
+.sources-section {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 4rem;
+}
+
+.sources-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  margin-top: 1.5rem;
+}
+
+.source-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  background: var(--almost-dark);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 10px;
+  padding: 1.2rem 1.5rem;
+  text-decoration: none;
+  transition: border-color 0.3s, transform 0.2s;
+}
+.source-card:hover {
+  border-color: rgba(88,166,255,0.3);
+  transform: translateX(4px);
+}
+
+.source-type {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.source-title {
+  font-size: 1rem;
+  color: #fff;
+  font-weight: 500;
+}
+
+.source-url {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width: 600px) {
+  section { padding: 3rem 1.2rem; }
+  .dev-section { padding: 2rem 1.2rem; }
+  .traffic-vis { flex-direction: column; align-items: center; }
+  .traffic-card { max-width: 100%; }
+  .counter-strip { gap: 1.5rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ========== HERO ========== -->
+<div class="hero">
+  <span class="hero-label">Unidad 1 — Cierre · Arte + Datos</span>
+  <h1>
+    99 celulares.<br>
+    <span class="highlight-red">Cero</span> autos.<br>
+    Un <span class="highlight-green">embotellamiento</span> real.
+  </h1>
+  <p class="hero-sub">
+    En 2020, el artista Simon Weckert caminó por Berlín con un carrito lleno de celulares y engañó a Google Maps. Lo que reveló va mucho más allá de un hack.
+  </p>
+  <p class="hero-artist">
+    <a href="https://www.simonweckert.com/googlemapshacks.html" target="_blank">Simon Weckert</a> · Google Maps Hacks · Performance & Installation, 2020
+  </p>
+  <span class="scroll-hint">↓ SCROLL PARA EXPLORAR</span>
+</div>
+
+<!-- ========== THE WORK ========== -->
+<section>
+  <span class="section-number">01 — La obra</span>
+  <h2>¿Qué hizo Weckert?</h2>
+  <p class="lead">
+    Cargó 99 celulares de segunda mano en un carrito, todos con Google Maps abierto, y caminó lentamente por las calles de Berlín.
+  </p>
+  <p>
+    Google Maps interpretó cada celular como un auto. Detectó 99 "vehículos" moviéndose despacio en la misma calle. Conclusión del algoritmo: hay un embotellamiento. La calle pasó de verde a rojo en el mapa, y el sistema empezó a desviar autos reales por rutas alternativas.
+  </p>
+  <p>
+    No hubo autos. No hubo tráfico. Solo <strong>datos que el sistema no supo distinguir de la realidad</strong>.
+  </p>
+</section>
+
+<div class="video-container">
+  <a href="https://www.youtube.com/watch?v=2hUOHzMkjhA" target="_blank" class="video-link">
+    <div class="video-thumb">
+      <img src="https://img.youtube.com/vi/2hUOHzMkjhA/maxresdefault.jpg" alt="Google Maps Hacks — Simon Weckert" />
+      <div class="play-overlay">
+        <svg width="68" height="48" viewBox="0 0 68 48"><path d="M66.52 7.74c-.78-2.93-2.49-5.41-5.42-6.19C55.79.13 34 0 34 0S12.21.13 6.9 1.55c-2.93.78-4.64 3.26-5.42 6.19C.06 13.05 0 24 0 24s.06 10.95 1.48 16.26c.78 2.93 2.49 5.41 5.42 6.19C12.21 47.87 34 48 34 48s21.79-.13 27.1-1.55c2.93-.78 4.64-3.26 5.42-6.19C67.94 34.95 68 24 68 24s-.06-10.95-1.48-16.26z" fill="red"/><path d="M45 24L27 14v20" fill="white"/></svg>
+      </div>
+    </div>
+    <span class="video-caption">▶ Ver video: Google Maps Hacks (1:49)</span>
+  </a>
+</div>
+
+<section>
+  <div class="traffic-vis">
+    <div class="traffic-card green">
+      <div class="traffic-icon">🟢</div>
+      <h3>La calle real</h3>
+      <p>Vacía. Sin tránsito. Una persona caminando con un carrito.</p>
+    </div>
+    <div class="traffic-card red">
+      <div class="traffic-icon">🔴</div>
+      <h3>La calle según el dato</h3>
+      <p>Embotellada. 99 dispositivos = congestión severa. Autos desviados.</p>
+    </div>
+  </div>
+
+  <div class="quote-block">
+    <p>Los mapas de Google no representan el mundo tal como es. Construyen una versión del mundo a partir de los datos que reciben, y esa versión tiene poder sobre lo real.</p>
+  </div>
+</section>
+
+<!-- ========== WHY IT MATTERS ========== -->
+<section>
+  <span class="section-number">02 — ¿Por qué importa?</span>
+  <h2>Más allá del hack: las decisiones invisibles</h2>
+  <p>
+    Weckert no "rompió" Google Maps. Lo que hizo fue mostrar algo que ya estaba ahí: <strong>las decisiones de diseño que tomaron los desarrolladores</strong> cuando construyeron el sistema.
+  </p>
+
+  <div class="counter-strip">
+    <div class="counter-item">
+      <div class="counter-num">1</div>
+      <div class="counter-label">Supuesto</div>
+    </div>
+    <div class="counter-item">
+      <div class="counter-num">→</div>
+      <div class="counter-label">&nbsp;</div>
+    </div>
+    <div class="counter-item">
+      <div class="counter-num">∞</div>
+      <div class="counter-label">Consecuencias</div>
+    </div>
+  </div>
+
+  <p>
+    Alguien en el equipo de Google decidió: <em>"si hay muchos celulares moviéndose despacio en una calle, entonces hay congestión vehicular"</em>. Esa decisión fue razonable en la mayoría de los casos. Pero contenía un supuesto no examinado: que cada celular es un auto.
+  </p>
+
+  <div class="insight-grid">
+    <div class="insight-box">
+      <span class="tag">Dato como proxy</span>
+      <p>Un celular no es un auto. Es un <em>proxy</em>: una aproximación que funciona hasta que no funciona.</p>
+    </div>
+    <div class="insight-box">
+      <span class="tag">El modelo como simplificación</span>
+      <p>Todo modelo recorta la realidad. La pregunta es: ¿qué se pierde en ese recorte?</p>
+    </div>
+    <div class="insight-box">
+      <span class="tag">Impacto en lo real</span>
+      <p>Decisiones en código producen efectos físicos: autos desviados, rutas alteradas, tiempo perdido.</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== INTERACTIVE: DEVELOPER POV ========== -->
+<section>
+  <span class="section-number">03 — Ponete en el lugar del desarrollador</span>
+  <h2>Las decisiones que esconden los sistemas</h2>
+  <p>
+    Cada sistema basado en datos está construido sobre decisiones humanas. Algunas explícitas, muchas invisibles. En los siguientes escenarios, vas a tomar decisiones de diseño como si fueras parte del equipo que desarrolla el sistema.
+  </p>
+  <p style="color: var(--muted); font-size: 0.9rem;">
+    No hay respuestas "correctas". Lo que importa es ver qué se gana y qué se pierde con cada elección.
+  </p>
+
+  <!-- Scenario 1 -->
+  <div class="dev-section">
+    <span class="scenario-label">Escenario 1</span>
+    <h3>Medición de tránsito en tiempo real</h3>
+    <div class="dev-prompt">Sos parte del equipo de Google Maps. Tenés que decidir cómo medir la congestión vehicular.</div>
+    
+    <div class="scenario" data-scenario="1">
+      <p class="scenario-q">¿Qué dato usás como indicador principal de tránsito?</p>
+      <div class="options">
+        <button class="option-btn" data-choice="a" onclick="selectOption(this)">
+          📱 Cantidad de celulares con GPS activo en la calle
+        </button>
+        <button class="option-btn" data-choice="b" onclick="selectOption(this)">
+          📷 Cámaras de tránsito con reconocimiento de vehículos
+        </button>
+        <button class="option-btn" data-choice="c" onclick="selectOption(this)">
+          📡 Sensores de velocidad integrados en el asfalto
+        </button>
+      </div>
+      <div class="consequence" id="cons-1a">
+        <span class="con-label">Consecuencia oculta</span>
+        Es la opción más barata y escalable — y la que eligió Google. Pero asume que cada celular = un vehículo. No distingue peatones, ciclistas, personas en colectivo ni... artistas con carritos. <strong>La vulnerabilidad que explotó Weckert nace exactamente de esta decisión.</strong>
+      </div>
+      <div class="consequence" id="cons-1b">
+        <span class="con-label">Consecuencia oculta</span>
+        Más preciso para contar autos reales, pero requiere infraestructura física, tiene costos altos y plantea problemas de privacidad (vigilancia urbana). Además, solo funciona donde hay cámaras — <strong>¿qué pasa con las calles sin cámaras? No existen para el sistema.</strong>
+      </div>
+      <div class="consequence" id="cons-1c">
+        <span class="con-label">Consecuencia oculta</span>
+        Dato más directo, pero solo disponible en ciudades ricas con infraestructura moderna. <strong>El sistema funcionaría perfecto en Berlín pero sería ciego en el conurbano bonaerense.</strong> ¿Quién queda afuera cuando elegimos una fuente de datos?
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario 2 -->
+  <div class="dev-section">
+    <span class="scenario-label">Escenario 2</span>
+    <h3>Plataforma de créditos online</h3>
+    <div class="dev-prompt">Diseñás un sistema de scoring crediticio para un banco digital. Tenés que elegir qué datos usar para evaluar el riesgo de que una persona no devuelva el dineros prestado.</div>
+    
+    <div class="scenario" data-scenario="2">
+      <p class="scenario-q">¿Qué fuentes de datos incluís en tu modelo?</p>
+      <div class="options">
+        <button class="option-btn" data-choice="a" onclick="selectOption(this)">
+          💳 Historial crediticio en el sistema financiero formal
+        </button>
+        <button class="option-btn" data-choice="b" onclick="selectOption(this)">
+          📱 Historial de pagos de servicios (luz, gas, celular, streaming)
+        </button>
+        <button class="option-btn" data-choice="c" onclick="selectOption(this)">
+          🌐 Actividad en redes sociales y patrones de navegación
+        </button>
+      </div>
+      <div class="consequence" id="cons-2a">
+        <span class="con-label">Consecuencia oculta</span>
+        Lo más "objetivo"... pero excluye a toda persona que nunca tuvo una tarjeta de crédito o un préstamo formal. En Argentina, <strong>millones de personas quedan invisibilizadas</strong> — no porque sean riesgosas, sino porque el sistema no las puede ver.
+      </div>
+      <div class="consequence" id="cons-2b">
+        <span class="con-label">Consecuencia oculta</span>
+        Amplía la mirada e incluye a más personas. Pero ahora tu modelo "sabe" cosas sobre la vida cotidiana de la gente. <strong>¿Quién autorizó que pagar tarde la luz un mes afecte si te dan un crédito?</strong> El dato existe y es accesible, pero ¿es legítimo usarlo?
+      </div>
+      <div class="consequence" id="cons-2c">
+        <span class="con-label">Consecuencia oculta</span>
+        Técnicamente posible y ya se hace en algunos países. Pero pensá: el modelo podría aprender que ciertas zonas, ciertos horarios de actividad o ciertos contactos predicen riesgo. <strong>Estás a un paso de que el algoritmo discrimine por barrio, nivel socioeconómico o grupo social</strong> — sin que nadie lo haya programado explícitamente.
+      </div>
+    </div>
+  </div>
+
+  <!-- Scenario 3 -->
+  <div class="dev-section">
+    <span class="scenario-label">Escenario 3</span>
+    <h3>Sistema de recomendación de noticias</h3>
+    <div class="dev-prompt">Trabajás en una app de noticias. Tu algoritmo decide qué artículos ve cada persona en su feed.</div>
+    
+    <div class="scenario" data-scenario="3">
+      <p class="scenario-q">¿Qué optimizás?</p>
+      <div class="options">
+        <button class="option-btn" data-choice="a" onclick="selectOption(this)">
+          ⏱ Tiempo de permanencia en la app
+        </button>
+        <button class="option-btn" data-choice="b" onclick="selectOption(this)">
+          🎯 Diversidad de fuentes y perspectivas
+        </button>
+        <button class="option-btn" data-choice="c" onclick="selectOption(this)">
+          👍 Satisfacción del usuario (encuestas post-lectura)
+        </button>
+      </div>
+      <div class="consequence" id="cons-3a">
+        <span class="con-label">Consecuencia oculta</span>
+        Lo que más retiene son las emociones fuertes: indignación, miedo, sorpresa. <strong>Tu sistema va a aprender a mostrar noticias que enojan o alarman, porque eso maximiza tu métrica.</strong> No lo programaste así, pero el dato te lleva ahí.
+      </div>
+      <div class="consequence" id="cons-3b">
+        <span class="con-label">Consecuencia oculta</span>
+        Éticamente sólido, pero los usuarios pasan menos tiempo en la app. <strong>Tus métricas de negocio bajan.</strong> ¿Quién gana la discusión: el equipo de producto o el equipo de ética? ¿Y quién decide qué es "diverso"?
+      </div>
+      <div class="consequence" id="cons-3c">
+        <span class="con-label">Consecuencia oculta</span>
+        Suena democrático, pero la gente tiende a decir que le gusta lo que confirma lo que ya piensa. <strong>Tu sistema va a reforzar sesgos de confirmación disfrazados de "preferencia del usuario".</strong> El sesgo es real, pero viene envuelto en datos.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== SYNTHESIS ========== -->
+<section>
+  <span class="section-number">04 — Lo que el arte nos hace ver</span>
+  <h2>Weckert no hackeó un sistema. Reveló sus decisiones.</h2>
+  <p>
+    Cada uno de los escenarios que exploraste tiene algo en común con Google Maps Hacks: un sistema que funciona, que parece neutral, que "solo sigue los datos"... pero que en realidad está construido sobre decisiones humanas con consecuencias reales.
+  </p>
+
+  <div class="connection-banner">
+    <h3>¿Y esto qué tiene que ver con lo que vimos en clase?</h3>
+    <p style="margin-bottom: 0;">
+      Todo. Lo que hizo Weckert es la cadena que trabajamos en la Unidad 1 puesta en acción: un dato que no es lo que parece (un celular no es un auto), un sistema que construye información a partir de eso ("hay congestión"), y una decisión real que afecta a personas reales (autos desviados, rutas alteradas). La diferencia entre dato, información y conocimiento no es un esquema teórico — es lo que pasa cada vez que alguien diseña un sistema y elige qué medir, cómo interpretarlo y qué hacer con eso.
+    </p>
+  </div>
+
+</section>
+
+<div class="divider"></div>
+
+<!-- ========== PARA CONVERSAR ========== -->
+<section>
+  <span class="section-number">05 — Para conversar</span>
+  <h2>Llevá esta tensión afuera del aula</h2>
+  <p>
+    Esto no se resuelve solo pensando — se entiende mejor cuando lo hablás con otros. Te proponemos que elijas al menos una de estas preguntas y la lleves a una conversación real: con tu familia, con amigos, con compañeros de otras carreras, con otros profesores. Fijate qué pasa cuando alguien que no estudia datos escucha estas cosas por primera vez.
+  </p>
+
+  <div class="dev-section" style="margin-top: 2rem;">
+    <div class="insight-grid" style="margin: 0;">
+      <div class="insight-box" style="border-top: 2px solid var(--accent);">
+        <span class="tag">En tu casa</span>
+        <p>Contale a alguien de tu familia lo que hizo Weckert con los 99 celulares y después preguntale: <strong>¿alguna vez el GPS, una app o una recomendación automática te mandó para cualquier lado o te dijo algo que no tenía nada que ver con lo que estaba pasando? </strong>  Dejá que te cuente la historia.</p>
+      </div>
+      <div class="insight-box" style="border-top: 2px solid var(--warm);">
+        <span class="tag">Con amigos</span>
+        <p>Preguntales: <strong>si un banco decidiera si te da un crédito basándose en a qué hora usás el celular y qué apps tenés instaladas, les parecería normal?</strong> Probablemente la conversación se ponga interesante sola.</p>
+      </div>
+      <div class="insight-box" style="border-top: 2px solid var(--green);">
+        <span class="tag">Con otros profes</span>
+        <p>Preguntale a un docente de otra materia: <strong>¿alguna vez un número o una métrica reemplazó una decisión que antes se tomaba con criterio humano en tu campo? </strong> En derecho, en medicina, en economía — todos tienen un ejemplo.</p>
+      </div>
+    </div>
+  </div>
+
+  <p style="margin-top: 2rem; color: var(--muted); font-size: 0.95rem;">
+    No hace falta que traigas un resumen ni un informe. La idea es que la próxima vez que abramos una discusión sobre datos en clase, tengas algo que no salió de Google: salió de una conversación.
+  </p>
+
+  <div class="quote-block" style="border-left-color: var(--accent); background: rgba(88,166,255,0.04); margin-top: 3rem;">
+    <p style="font-size: 1.1rem;">
+      Los datos no hablan por sí solos. Siempre hay alguien que decide qué se mide, cómo se mide y qué se hace con eso. La ciencia de datos empieza cuando dejamos de naturalizar esas decisiones.
+    </p>
+  </div>
+</section>
+
+<!-- ========== FUENTES ========== -->
+<section class="sources-section">
+  <span class="section-number">Fuentes</span>
+  <h2>Para saber más de la historia</h2>
+  <div class="sources-list">
+    <a href="https://www.simonweckert.com/googlemapshacks.html" target="_blank" class="source-card">
+      <span class="source-type">Sitio del artista</span>
+      <span class="source-title">Google Maps Hacks — Simon Weckert</span>
+      <span class="source-url">simonweckert.com</span>
+    </a>
+    <a href="https://www.youtube.com/watch?v=2hUOHzMkjhA" target="_blank" class="source-card">
+      <span class="source-type">Video</span>
+      <span class="source-title">Google Maps Hacks — Performance & Installation (YouTube)</span>
+      <span class="source-url">youtube.com</span>
+    </a>
+    <a href="https://indiehoy.com/arte/el-artista-que-se-burlo-de-google-maps-y-se-volvio-viral/" target="_blank" class="source-card">
+      <span class="source-type">Nota en español</span>
+      <span class="source-title">El artista que se burló de Google Maps y se volvió viral</span>
+      <span class="source-url">indiehoy.com</span>
+    </a>
+  </div>
+</section>
+
+<!-- ========== FOOTER ========== -->
+<div class="footer">
+  Introducción a la Ciencia de Datos · Unidad 1 · UCA 2026<br>
+  Obra: <a href="https://www.simonweckert.com/googlemapshacks.html" target="_blank">Google Maps Hacks</a> — Simon Weckert, 2020
+</div>
+
+<script>
+function selectOption(btn) {
+  const scenario = btn.closest('.scenario');
+  const scenarioNum = scenario.dataset.scenario;
+  const choice = btn.dataset.choice;
+  
+  // Remove previous selections
+  scenario.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+  scenario.querySelectorAll('.consequence').forEach(c => c.classList.remove('visible'));
+  
+  // Select this one
+  btn.classList.add('selected');
+  
+  // Show consequence
+  const cons = document.getElementById(`cons-${scenarioNum}${choice}`);
+  if (cons) {
+    cons.classList.add('visible');
+    // Smooth scroll to consequence
+    setTimeout(() => {
+      cons.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }, 100);
+  }
+}
+
+// Animate elements on scroll
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.style.opacity = '1';
+      entry.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('section, .dev-section, .video-container').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(30px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
+</script>
+
+<a href="../index.html" style="position:fixed;top:14px;left:14px;z-index:9999;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#e8e4df;background:rgba(10,10,12,.78);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:7px 14px;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)">← Todos los artefactos</a>
+</body>
+</html>

@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ver datos, ver personas — U4 Cierre STEM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0c;
+      --fg: #e8e4df;
+      --accent: #c5f467;
+      --warm: #f2a65a;
+      --cool: #7eb8da;
+      --rose: #e07a8e;
+      --violet: #9b8ec4;
+      --muted: #5a5862;
+      --card-bg: #141418;
+      --card-border: #2a2a30;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 17px;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+    }
+
+    .hero-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.3s forwards;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 8vw, 6.5rem);
+      font-weight: 700;
+      line-height: 1.08;
+      max-width: 900px;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.6s forwards;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 520px;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.9s forwards;
+      margin-bottom: 4rem;
+    }
+
+    .scroll-cue {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeUp 0.7s 1.4s forwards;
+    }
+
+    .scroll-cue span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .scroll-arrow {
+      width: 1px;
+      height: 38px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: scrollBob 2.2s ease-in-out infinite;
+    }
+
+    @keyframes scrollBob {
+      0%, 100% { transform: translateY(0); opacity: 0.4; }
+      50% { transform: translateY(7px); opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 780px; margin: 0 auto; padding: 0 2rem; }
+    .section { padding: 5rem 0; }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-label span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--card-border);
+    }
+
+    /* ── HEADINGS ── */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title em { font-style: italic; color: var(--accent); }
+
+    .section-body {
+      color: rgba(232, 228, 223, 0.65);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+
+    .section-body em { color: var(--fg); font-style: italic; }
+    .section-body strong { color: var(--fg); font-weight: 500; }
+
+    /* ── DIVIDER ── */
+    .divider { border: none; border-top: 1px solid var(--card-border); }
+
+    /* ── CONNECTOR ── */
+    .connector {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 3rem 0;
+    }
+
+    .connector span {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.3;
+    }
+
+    /* ── BIO CARD ── */
+    .bio-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      margin-top: 2.5rem;
+    }
+
+    .bio-card-sidebar {
+      width: 4px;
+      background: linear-gradient(to bottom, var(--accent), var(--violet));
+      flex-shrink: 0;
+    }
+
+    .bio-card-body {
+      padding: 2rem;
+      flex: 1;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .bio-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-style: italic;
+      margin-bottom: 0.6rem;
+    }
+
+    .bio-card-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .bio-card p {
+      font-size: 0.95rem;
+      color: rgba(232, 228, 223, 0.6);
+      line-height: 1.75;
+    }
+
+    .bio-card-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2.2rem;
+      color: var(--muted);
+      text-align: center;
+      white-space: nowrap;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .bio-card-time small {
+      display: block;
+      font-size: 0.52rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .card-link {
+      display: inline-block;
+      margin-top: 1.25rem;
+      padding: 0.55rem 1.3rem;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      text-decoration: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .card-link:hover { background: var(--accent); color: var(--bg); }
+
+    /* ── MEDIA LABEL (iframe/img caption) ── */
+    .media-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    /* ── DECISIONS GRID ── */
+    .decisions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 580px) { .decisions-grid { grid-template-columns: 1fr; } }
+
+    .decision-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .decision-card:hover { border-color: rgba(197, 244, 103, 0.25); }
+    .decision-card.open { border-color: rgba(197, 244, 103, 0.4); }
+
+    .decision-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.1em;
+    }
+
+    .decision-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 0.5rem;
+    }
+
+    .decision-question {
+      font-size: 0.88rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 1rem;
+    }
+
+    .decision-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      transition: opacity 0.2s;
+    }
+
+    .decision-card.open .decision-hint { opacity: 0; }
+
+    .reveal {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.35s ease, opacity 0.25s ease;
+    }
+
+    .decision-card.open .reveal { opacity: 1; }
+
+    .reveal p {
+      font-size: 0.9rem;
+      color: rgba(232, 228, 223, 0.6);
+      line-height: 1.75;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--card-border);
+      margin-top: 0.25rem;
+    }
+
+    /* ── TRES MIRADAS (interactivo U4) ── */
+    .tres-miradas {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--card-border);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 2.5rem;
+    }
+
+    .mirada-node {
+      background: var(--card-bg);
+      padding: 1.75rem 1.25rem;
+      cursor: pointer;
+      transition: background 0.25s ease;
+      position: relative;
+    }
+
+    .mirada-node:hover,
+    .mirada-node.active { background: #1a1a20; }
+
+    .mirada-node.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+    }
+
+    .mirada-node:nth-child(1).active::after { background: var(--rose); }
+    .mirada-node:nth-child(2).active::after { background: var(--cool); }
+    .mirada-node:nth-child(3).active::after { background: var(--warm); }
+
+    .mirada-number {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-bottom: 0.5rem;
+    }
+
+    .mirada-node h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.3;
+    }
+
+    .mirada-node:nth-child(1) h4 { color: var(--rose); }
+    .mirada-node:nth-child(2) h4 { color: var(--cool); }
+    .mirada-node:nth-child(3) h4 { color: var(--warm); }
+
+    .mirada-detail {
+      background: #0f0f13;
+      border: 1px solid var(--card-border);
+      border-top: none;
+      border-radius: 0 0 12px 12px;
+      padding: 2rem;
+      min-height: 160px;
+      transition: opacity 0.3s ease;
+    }
+
+    .mirada-detail h5 {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+
+    .mirada-detail p {
+      font-size: 0.93rem;
+      color: rgba(232, 228, 223, 0.6);
+      line-height: 1.78;
+    }
+
+    .mirada-detail .autor {
+      display: block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      margin-top: 0.75rem;
+      text-transform: uppercase;
+    }
+
+    .mirada-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 0.9rem;
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 580px) {
+      .tres-miradas { grid-template-columns: 1fr; }
+    }
+
+    /* ── BIG QUOTE ── */
+    .big-quote { text-align: center; padding: 4rem 0; }
+
+    .big-quote hr {
+      border: none;
+      border-top: 1px solid var(--card-border);
+      margin-bottom: 2.5rem;
+    }
+
+    .big-quote hr.bottom { margin-top: 2.5rem; margin-bottom: 0; }
+
+    .big-quote blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+      font-style: italic;
+      line-height: 1.4;
+      color: var(--fg);
+      max-width: 680px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .big-quote cite {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-style: normal;
+    }
+
+    /* ── IDEAS CARD (tesis conceptual) ── */
+    .ideas-card {
+      margin-top: 2rem;
+      background: var(--card-bg);
+      border: 1px solid rgba(197, 244, 103, 0.15);
+      border-radius: 12px;
+      padding: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .ideas-term {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-style: italic;
+      color: var(--accent);
+      white-space: nowrap;
+      line-height: 1;
+      padding-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .ideas-body {
+      flex: 1;
+    }
+
+    .ideas-lista {
+      list-style: none;
+      counter-reset: idea;
+    }
+
+    .ideas-lista li {
+      counter-increment: idea;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      padding: 1.1rem 0;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .ideas-lista li:last-child { border-bottom: none; padding-bottom: 0; }
+    .ideas-lista li:first-child { padding-top: 0; }
+
+    .ideas-lista li::before {
+      content: counter(idea, decimal-leading-zero);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--accent);
+      white-space: nowrap;
+      padding-top: 4px;
+      flex-shrink: 0;
+      letter-spacing: 0.05em;
+    }
+
+    .ideas-lista li span {
+      font-size: 0.95rem;
+      color: rgba(232, 228, 223, 0.62);
+      line-height: 1.78;
+    }
+
+    .ideas-lista li strong { color: var(--fg); font-weight: 500; }
+
+    @media (max-width: 480px) {
+      .ideas-card { flex-direction: column; gap: 1rem; }
+    }
+
+    /* ── REFLECTION BOX ── */
+    .reflection-box {
+      background: linear-gradient(135deg, rgba(197, 244, 103, 0.04) 0%, rgba(155, 142, 196, 0.04) 100%);
+      border: 1px solid rgba(197, 244, 103, 0.14);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin-top: 2rem;
+    }
+
+    .reflection-list {
+      list-style: none;
+      counter-reset: ref;
+    }
+
+    .reflection-list li {
+      counter-increment: ref;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .reflection-list li:last-child { border-bottom: none; padding-bottom: 0; }
+    .reflection-list li:first-child { padding-top: 0; }
+
+    .reflection-list li::before {
+      content: counter(ref, decimal-leading-zero);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--accent);
+      white-space: nowrap;
+      padding-top: 4px;
+      flex-shrink: 0;
+      letter-spacing: 0.05em;
+    }
+
+    .reflection-list li span {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      line-height: 1.58;
+    }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      border-top: 1px solid var(--card-border);
+      padding: 2.5rem 2rem;
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-info {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      line-height: 1.9;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 480px) {
+      .bio-card-body { flex-direction: column; gap: 1rem; }
+      .bio-card-time { text-align: left; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 1. HERO -->
+<section class="hero">
+  <p class="hero-tag">Unidad 4 · Cierre STEM · Arte + Datos</p>
+  <h1>Ver datos,<br><em>ver personas</em></h1>
+  <p class="hero-sub">Una exploración de lo que pasa cuando los datos no son solo números, sino formas de mirar lo humano.</p>
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- 2. PUNTO DE PARTIDA -->
+<section class="section">
+  <div class="container">
+    <div class="section-label"><span>01 — Punto de partida</span></div>
+    <h2 class="section-title">¿Qué pasa cuando los datos<br><em>miran lo humano?</em></h2>
+    <p class="section-body">
+      A veces pensamos que visualizar datos es hacer gráficos claros. Ordenar información. Mostrar resultados. Pero hay otra posibilidad: pensar la visualización como una forma de mirar lo humano. Cómo vivimos, qué repetimos, qué mostramos, qué ocultamos, qué valoramos.
+    </p>
+    <p class="section-body">
+      En esta unidad vimos los fundamentos técnicos: tipos de visualizaciones, principios de diseño visual, visualizaciones engañosas, narrativas con datos. Ahora toca algo distinto. No se trata de entender <em>cómo</em> se visualiza, sino de preguntarse <em>qué significa hacerlo</em>.
+    </p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- 3. DIMENSIONES DEL DATO -->
+<section class="section">
+  <div class="container">
+    <div class="section-label"><span>02 — Dimensiones del dato</span></div>
+    <h2 class="section-title">Decisiones que la visualización<br><em>no te dice que toma</em></h2>
+    <p class="section-body">Toda visualización esconde decisiones. Tocá cada tarjeta para explorar qué está en juego.</p>
+
+    <div class="decisions-grid">
+
+      <div class="decision-card" onclick="toggleCard(this)">
+        <p class="decision-num">01</p>
+        <h3 class="decision-title">¿Qué se elige mostrar?</h3>
+        <p class="decision-question">Toda visualización implica una selección. ¿Qué queda dentro del gráfico y qué queda afuera?</p>
+        <p class="decision-hint">↓ tocá para revelar</p>
+        <div class="reveal"><p>Antes de hacer una visualización, alguien decidió qué datos recolectar, desde qué fuentes, con qué criterios. Esas decisiones no son neutrales: definen qué va a poder aparecer en el gráfico y qué va a quedar invisible. Lo visible en un dataset no es el mundo: es una versión del mundo filtrada por las decisiones de quienes lo construyeron.</p></div>
+      </div>
+
+      <div class="decision-card" onclick="toggleCard(this)">
+        <p class="decision-num">02</p>
+        <h3 class="decision-title">¿Qué se queda afuera?</h3>
+        <p class="decision-question">Un dataset siempre tiene bordes. ¿Qué historias no aparecen en los datos?</p>
+        <p class="decision-hint">↓ tocá para revelar</p>
+        <div class="reveal"><p>Toda colección de datos refleja las decisiones de quienes la construyeron: qué conservar, qué digitalizar, qué hacer público. Lo que la visualización muestra no es la realidad completa: es la realidad que fue registrada. Y las ausencias —lo que falta— no se visualiza, aunque sean igual de significativas.</p></div>
+      </div>
+
+      <div class="decision-card" onclick="toggleCard(this)">
+        <p class="decision-num">03</p>
+        <h3 class="decision-title">¿Puede un dato ser íntimo?</h3>
+        <p class="decision-question">¿Qué pasa cuando lo que medimos no es el mundo exterior sino nuestra propia experiencia?</p>
+        <p class="decision-hint">↓ tocá para revelar</p>
+        <div class="reveal"><p>No todos los datos vienen de sensores o bases de datos corporativas. Algunos pueden venir de vos: con quién hablás, cómo te sentís, qué repetís sin darte cuenta. Registrar eso no busca precisión ni eficiencia: busca descubrir patrones que normalmente no vemos en nuestra propia vida. El dato emerge como un reflejo, no como métrica.</p></div>
+      </div>
+
+      <div class="decision-card" onclick="toggleCard(this)">
+        <p class="decision-num">04</p>
+        <h3 class="decision-title">¿Mostrar o proponer?</h3>
+        <p class="decision-question">¿Una visualización muestra cómo es el mundo o propone una forma de verlo?</p>
+        <p class="decision-hint">↓ tocá para revelar</p>
+        <div class="reveal"><p>Las elecciones de diseño —color, escala, jerarquía, tipo de gráfico— no son neutras. Dos visualizaciones del mismo dataset pueden llevar a conclusiones muy distintas. Por eso visualizar no es solo comunicar: es argumentar. Y argumentar bien implica ser transparente sobre los supuestos que organizan lo que se muestra.</p></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- 4. TRES ARTISTAS — INTERACTIVO -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-label"><span>03 — Tres personas que lo hacen visible</span></div>
+    <h2 class="section-title">Tres artistas,<br><em>tres formas de ver</em></h2>
+    <p class="section-body">
+      Estas preguntas no son solo teóricas. Hay artistas que las trabajan como práctica. Cada uno opera desde una escala distinta y con una pregunta diferente. Tocá cada columna para ver cuál es la suya, y scrolleá para ver sus obras.
+    </p>
+
+    <div class="tres-miradas" id="tresMiradas">
+      <div class="mirada-node active" onclick="selectMirada('personal')">
+        <div class="mirada-number">01</div>
+        <h4>Lo personal<br><small style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--muted);font-weight:400;">Giorgia Lupi</small></h4>
+      </div>
+      <div class="mirada-node" onclick="selectMirada('colectivo')">
+        <div class="mirada-number">02</div>
+        <h4>Lo colectivo<br><small style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--muted);font-weight:400;">Lev Manovich</small></h4>
+      </div>
+      <div class="mirada-node" onclick="selectMirada('memoria')">
+        <div class="mirada-number">03</div>
+        <h4>La memoria<br><small style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--muted);font-weight:400;">Refik Anadol</small></h4>
+      </div>
+    </div>
+
+    <div class="mirada-detail" id="miradaDetail">
+      <h5 id="detailLabel">Datos íntimos</h5>
+      <p id="detailText">Los datos no siempre tienen que ser exactos, ni objetivos, ni eficientes. Pueden ser personales. Imprecisos. Incluso emocionales. Lupi propone registrar pequeñas cosas de la vida cotidiana —con quién hablás, cómo te sentís, qué repetís sin darte cuenta— y traducirlo en forma visual. No para encontrar una verdad definitiva, sino para descubrir patrones que normalmente no vemos.</p>
+      <span class="autor" id="detailAutor">→ giorgialupi.com — Dear Data, Data Humanism</span>
+    </div>
+
+    <p class="mirada-hint">↑ tocá cada columna para ver más</p>
+  </div>
+</section>
+
+
+
+<!-- SUS OBRAS EN DETALLE -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-label"><span>Sus obras en detalle</span></div>
+
+    <!-- Giorgia Lupi -->
+    <div class="bio-card">
+      <div class="bio-card-sidebar" style="background: linear-gradient(to bottom, var(--rose), var(--violet))"></div>
+      <div class="bio-card-body" style="flex-direction:column; gap:0">
+        <p class="bio-card-meta">01 · Lo personal · Data Humanism · 2018</p>
+        <h3>Giorgia Lupi</h3>
+        <img
+          src="https://images.squarespace-cdn.com/content/v1/550de105e4b05c49fa2bba03/1532010285164-6Y4L8YI7NCD15NDX54IS/datahumanism.jpeg?format=2500w"
+          alt="Data Humanism — Giorgia Lupi"
+          style="width:100%; border-radius:6px; display:block; margin:1rem 0; opacity:0.85;"
+        >
+        <p>Diseñadora de información. En <em>Dear Data</em>, Lupi y su colega Stefanie Posavec se enviaron durante un año postales con visualizaciones dibujadas a mano de su vida cotidiana: cuántas veces miraron el reloj, qué emociones tuvieron, qué puertas abrieron. Ningún dato era "importante" en el sentido convencional. La propuesta era que registrar lo pequeño, lo impreciso, lo personal, también puede revelar algo verdadero. Lupi llama a esto Data Humanism: una forma de trabajar con datos que no renuncia a la subjetividad.</p>
+        <a href="https://giorgialupi.com" target="_blank" class="card-link">→ giorgialupi.com</a>
+      </div>
+    </div>
+
+    <!-- Lev Manovich -->
+    <div class="bio-card">
+      <div class="bio-card-sidebar" style="background: linear-gradient(to bottom, var(--cool), var(--accent))"></div>
+      <div class="bio-card-body" style="flex-direction:column; gap:0">
+        <p class="bio-card-meta">02 · Lo colectivo · Cultural Analytics</p>
+        <h3>Lev Manovich</h3>
+        <div style="position:relative; width:100%; padding-top:58%; border-radius:6px; overflow:hidden; background:#0a0a0c; margin:1rem 0;">
+          <iframe
+            src="https://selfiecity.net/"
+            title="Selfie City — Lev Manovich"
+            style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;"
+            loading="lazy"
+          ></iframe>
+        </div>
+        <span class="media-label">selfiecity.net — interactivo embebido</span>
+        <p>Teórico de los medios y pionero del Cultural Analytics. En <em>Selfie City</em>, analizó más de 120.000 selfies de cinco ciudades del mundo para detectar patrones en poses, expresiones y géneros. Sus trabajos muestran cómo el volumen de datos puede revelar tendencias culturales invisibles para la mirada individual. Autor de <em>Cultural Analytics</em> y <em>El lenguaje de los nuevos medios</em>.</p>
+        <a href="https://manovich.net" target="_blank" class="card-link">→ manovich.net</a>
+      </div>
+    </div>
+
+    <!-- Refik Anadol -->
+    <div class="bio-card">
+      <div class="bio-card-sidebar" style="background: linear-gradient(to bottom, var(--warm), var(--rose))"></div>
+      <div class="bio-card-body" style="flex-direction:column; gap:0">
+        <p class="bio-card-meta">03 · La memoria · Unsupervised · MoMA 2022</p>
+        <h3>Refik Anadol</h3>
+        <div style="position:relative; width:100%; padding-top:56.25%; border-radius:6px; overflow:hidden; background:#0a0a0c; margin:1rem 0;">
+          <iframe
+            src="https://player.vimeo.com/video/856306786?autoplay=0&title=0&byline=0&portrait=0"
+            title="Refik Anadol — Unsupervised MoMA"
+            style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;"
+            allow="autoplay; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+        </div>
+        <span class="media-label">Unsupervised — MoMA, 2022</span>
+        <p>Artista de medios y pionero del arte con inteligencia artificial. En <em>Unsupervised</em> (MoMA, 2022), entrenó un modelo con el archivo completo del museo —178.000 obras, 200 años de arte moderno— para generar en tiempo real imágenes que nunca existieron. Más de 3 millones de personas vieron la obra en el lobby del MoMA.</p>
+        <a href="https://refikanadol.com" target="_blank" class="card-link">→ refikanadol.com</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- BIG QUOTE -->
+<div class="container">
+  <div class="big-quote">
+    <hr>
+    <blockquote>
+      "Cuando visualizamos datos, ¿estamos mostrando el mundo tal como es o estamos proponiendo una forma de verlo?"
+    </blockquote>
+    <hr class="bottom">
+  </div>
+</div>
+
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- 5. LO QUE CONECTA TODO -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-label"><span>04 — Lo que conecta todo</span></div>
+    <h2 class="section-title">Ideas para<br><em>llevarte de esta unidad</em></h2>
+    <p class="section-body">
+      A lo largo de la unidad, vimos que la visualización no es el paso final de un análisis. Es una <em>decisión interpretativa</em>.
+    </p>
+
+    <div class="ideas-card">
+
+      <div class="ideas-body">
+        <ul class="ideas-lista">
+          <li><span><strong>Visualizar es elegir.</strong> Qué mostrar, cómo ordenarlo, qué historia construir. No existe la visualización neutral.</span></li>
+          <li><span><strong>Los sesgos también se visualizan.</strong> Un gráfico puede amplificar errores en los datos, ocultar minorías o crear falsas impresiones de precisión. Detectar visualizaciones engañosas es una competencia técnica y crítica.</span></li>
+          <li><span><strong>La escala importa.</strong> Un dato personal, mil registros de una red social o una colección de museo: cada escala habilita preguntas distintas.</span></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="connector"><span></span><span></span><span></span></div>
+
+
+<!-- 6. REFLEXIÓN -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-label"><span>05 — Salir del aula</span></div>
+    <h2 class="section-title">Algunas preguntas<br><em>sin respuesta fácil</em></h2>
+
+    <p class="section-body">
+       Estas preguntas funcionan con familia, amigos, gente de otras carreras. No tienen respuesta correcta y funcionan mejor en voz alta.
+    </p>
+   
+
+    <div class="reflection-box">
+      <ol class="reflection-list">
+        <li><span>¿Qué parte de tu vida cotidiana podría convertirse en datos sin volverse "fría"? ¿Te daría ganas de registrar algo tuyo durante unos días? ¿Cómo lo podrías visualizar? </span></li>
+        <li><span>¿Qué creés que pasa cuando miles de fotos de redes sociales se transforman en un dataset? ¿Qué se vuelve visible? ¿Qué queda afuera? Probá discutirlo con alguien cercano y comparen posiciones.</span></li>
+        <li><span>Si un museo decide qué obras digitalizar, también decide qué recuerda la cultura. ¿Quién debería tomar esas decisiones? ¿Qué te gustaría preservar? ¿Te animás a hablar de esto con alguien más?</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <div class="footer-info">
+    Introducción a la Ciencia de Datos · UCA · 2026<br>
+    Unidad 4 — Cierre — Material complementario
+  </div>
+  <div>📊</div>
+</footer>
+
+<script>
+  const miradaData = {
+    personal: {
+      label: 'Datos íntimos',
+      text: 'Los datos no siempre tienen que ser exactos, ni objetivos, ni eficientes. Pueden ser personales. Imprecisos. Incluso emocionales. Lupi propone registrar pequeñas cosas de la vida cotidiana —con quién hablás, cómo te sentís, qué repetís sin darte cuenta— y traducirlo en forma visual. No para encontrar una verdad definitiva, sino para descubrir patrones que normalmente no vemos.',
+      autor: '→ giorgialupi.com — Giorgia Lupi'
+    },
+    colectivo: {
+      label: 'Datos sociales',
+      text: 'En lugar de mirar una experiencia individual, Manovich analiza grandes volúmenes de imágenes para detectar patrones estéticos y culturales. Colores que dominan una época, composiciones que se repiten, estilos que emergen o desaparecen. Lo que parecía ser una elección individual —cómo fotografiás, qué encuadrás— aparece como parte de una tendencia colectiva. La escala cambia lo que se puede ver.',
+      autor: '→ manovich.net — Lev Manovich'
+    },
+    memoria: {
+      label: 'Datos históricos',
+      text: 'Cuando un museo digitaliza su colección, no solo guarda obras: también construye un conjunto de datos. Eso permite hacer nuevas preguntas sobre qué colores predominan en una época, qué artistas fueron más exhibidos, qué historias se repiten. Y también otras, más incómodas: qué falta, qué no fue registrado, qué quedó afuera. La visualización se vuelve una forma de interpretar la memoria.',
+      autor: '→ refikanadol.com — Refik Anadol'
+    }
+  };
+
+  function selectMirada(key) {
+    const nodes = document.querySelectorAll('.mirada-node');
+    const keys = ['personal', 'colectivo', 'memoria'];
+    nodes.forEach((node, i) => {
+      node.classList.toggle('active', keys[i] === key);
+    });
+    const data = miradaData[key];
+    document.getElementById('detailLabel').textContent = data.label;
+    document.getElementById('detailText').textContent = data.text;
+    document.getElementById('detailAutor').textContent = data.autor;
+    const detail = document.getElementById('miradaDetail');
+    detail.style.opacity = '0';
+    setTimeout(() => { detail.style.opacity = '1'; }, 50);
+  }
+
+  function toggleCard(el) {
+    const reveal = el.querySelector('.reveal');
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.decision-card').forEach(c => {
+      c.classList.remove('open');
+      c.querySelector('.reveal').style.maxHeight = '0';
+    });
+    if (!isOpen) {
+      el.classList.add('open');
+      reveal.style.maxHeight = reveal.scrollHeight + 'px';
+    }
+  }
+</script>
+<a href="../index.html" style="position:fixed;top:14px;left:14px;z-index:9999;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#e8e4df;background:rgba(10,10,12,.78);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:7px 14px;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)">← Todos los artefactos</a>
+</body>
+</html>

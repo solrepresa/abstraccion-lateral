@@ -1,0 +1,917 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¿Quién decide quién es el mejor? — U3 Cierre STEM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0a0a0c;
+      --fg: #e8e4df;
+      --accent: #c5f467;
+      --warm: #f2a65a;
+      --cool: #7eb8da;
+      --rose: #e07a8e;
+      --violet: #9b8ec4;
+      --muted: #5a5862;
+      --card-bg: #141418;
+      --card-border: #2a2a30;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--fg);
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 300;
+      font-size: 17px;
+      line-height: 1.75;
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+    }
+
+    .hero-tag {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.68rem;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.3s forwards;
+    }
+
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.8rem, 8vw, 6.5rem);
+      font-weight: 700;
+      line-height: 1.08;
+      max-width: 900px;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.6s forwards;
+    }
+
+    .hero h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-sub {
+      font-size: 1.1rem;
+      color: var(--muted);
+      max-width: 520px;
+      font-weight: 300;
+      opacity: 0;
+      animation: fadeUp 0.7s 0.9s forwards;
+      margin-bottom: 4rem;
+    }
+
+    .scroll-cue {
+      position: absolute;
+      bottom: 2.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      animation: fadeUp 0.7s 1.4s forwards;
+    }
+
+    .scroll-cue span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .scroll-arrow {
+      width: 1px;
+      height: 38px;
+      background: linear-gradient(to bottom, var(--muted), transparent);
+      animation: scrollBob 2.2s ease-in-out infinite;
+    }
+
+    @keyframes scrollBob {
+      0%, 100% { transform: translateY(0); opacity: 0.4; }
+      50% { transform: translateY(7px); opacity: 1; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── LAYOUT ── */
+    .container { max-width: 780px; margin: 0 auto; padding: 0 2rem; }
+    .section { padding: 5rem 0; }
+
+    /* ── SECTION LABEL ── */
+    .section-label {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-label span {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      color: var(--accent);
+      white-space: nowrap;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--card-border);
+    }
+
+    /* ── HEADINGS ── */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title em { font-style: italic; color: var(--accent); }
+
+    .section-body {
+      color: rgba(232, 228, 223, 0.65);
+      line-height: 1.85;
+      margin-bottom: 1rem;
+    }
+
+    /* ── DIVIDER ── */
+    .divider { border: none; border-top: 1px solid var(--card-border); }
+
+    /* ── CONNECTOR ── */
+    .connector {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      padding: 3rem 0;
+    }
+
+    .connector span {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      opacity: 0.3;
+    }
+
+    /* ── BIO CARD ── */
+    .bio-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex;
+      margin-top: 2.5rem;
+    }
+
+    .bio-card-sidebar {
+      width: 4px;
+      background: linear-gradient(to bottom, var(--accent), var(--violet));
+      flex-shrink: 0;
+    }
+
+    .bio-card-body {
+      padding: 2rem;
+      flex: 1;
+      display: flex;
+      gap: 2rem;
+      align-items: flex-start;
+    }
+
+    .bio-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-style: italic;
+      margin-bottom: 0.6rem;
+    }
+
+    .bio-card-meta {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.15em;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 0.75rem;
+    }
+
+    .bio-card p {
+      font-size: 0.95rem;
+      color: rgba(232, 228, 223, 0.6);
+      line-height: 1.75;
+    }
+
+    .bio-card-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2.2rem;
+      color: var(--muted);
+      text-align: center;
+      white-space: nowrap;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .bio-card-time small {
+      display: block;
+      font-size: 0.52rem;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      margin-top: 6px;
+    }
+
+    .card-link {
+      display: inline-block;
+      margin-top: 1.25rem;
+      padding: 0.55rem 1.3rem;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      text-decoration: none;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      border-radius: 999px;
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .card-link:hover { background: var(--accent); color: var(--bg); }
+
+    /* ── DEMO INTERACTIVO ── */
+    .demo-wrap {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 2rem;
+      margin-top: 2.5rem;
+    }
+
+    .demo-header {
+      text-align: center;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+
+    .demo-stages {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+
+    .demo-stage-btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      padding: 0.45rem 1.1rem;
+      border: 1px solid var(--card-border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      border-radius: 999px;
+      transition: all 0.2s;
+      text-transform: uppercase;
+    }
+
+    .demo-stage-btn.active {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(197, 244, 103, 0.07);
+    }
+
+    .cands-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      justify-content: center;
+      max-width: 400px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .cand-dot {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      transition: opacity 0.4s;
+    }
+
+    .cand-dot.type-warm { background: var(--warm); }
+    .cand-dot.type-cool { background: var(--cool); }
+    .cand-dot.type-cool.out { opacity: 0.12; }
+
+    .ratio-section { max-width: 420px; margin: 0 auto 1.5rem; }
+
+    .ratio-labels {
+      display: flex;
+      justify-content: space-between;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .ratio-track {
+      height: 14px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .ratio-fill {
+      height: 100%;
+      background: var(--warm);
+      transition: width 0.7s ease;
+    }
+
+    .demo-desc-text {
+      text-align: center;
+      font-size: 0.9rem;
+      color: rgba(232, 228, 223, 0.5);
+      max-width: 420px;
+      margin: 1rem auto;
+      line-height: 1.7;
+    }
+
+    .demo-insight-text {
+      background: rgba(197, 244, 103, 0.04);
+      border-left: 2px solid var(--accent);
+      padding: 0.9rem 1.25rem;
+      font-size: 0.88rem;
+      font-style: italic;
+      color: rgba(232, 228, 223, 0.6);
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    /* ── DECISIONS GRID ── */
+    .decisions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 580px) { .decisions-grid { grid-template-columns: 1fr; } }
+
+    .decision-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .decision-card:hover { border-color: rgba(197, 244, 103, 0.25); }
+    .decision-card.open { border-color: rgba(197, 244, 103, 0.4); }
+
+    .decision-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+      letter-spacing: 0.1em;
+    }
+
+    .decision-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      line-height: 1.35;
+      margin-bottom: 1rem;
+    }
+
+    .decision-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      transition: opacity 0.2s;
+    }
+
+    .decision-card.open .decision-hint { opacity: 0; }
+
+    .reveal {
+      max-height: 0;
+      overflow: hidden;
+      opacity: 0;
+      transition: max-height 0.35s ease, opacity 0.25s ease;
+    }
+
+    .decision-card.open .reveal { opacity: 1; }
+
+    .reveal p {
+      font-size: 0.9rem;
+      color: rgba(232, 228, 223, 0.6);
+      line-height: 1.75;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--card-border);
+      margin-top: 0.25rem;
+    }
+
+    /* ── BIG QUOTE ── */
+    .big-quote { text-align: center; padding: 4rem 0; }
+
+    .big-quote hr {
+      border: none;
+      border-top: 1px solid var(--card-border);
+      margin-bottom: 2.5rem;
+    }
+
+    .big-quote hr.bottom { margin-top: 2.5rem; margin-bottom: 0; }
+
+    .big-quote blockquote {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.5rem, 3.5vw, 2.5rem);
+      font-style: italic;
+      line-height: 1.4;
+      color: var(--fg);
+      max-width: 680px;
+      margin: 0 auto 1.5rem;
+    }
+
+    .big-quote cite {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--muted);
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      font-style: normal;
+    }
+
+    /* ── FRANCISCO ── */
+    .memorial-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(197, 244, 103, 0.05);
+      border: 1px solid rgba(197, 244, 103, 0.18);
+      padding: 0.35rem 1rem;
+      border-radius: 999px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 0.14em;
+      color: var(--accent);
+      margin-bottom: 2.5rem;
+    }
+
+    .quotes-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    @media (max-width: 560px) { .quotes-grid { grid-template-columns: 1fr; } }
+
+    .quote-mini {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+    }
+
+    .quote-mini p {
+      font-style: italic;
+      font-size: 0.9rem;
+      color: rgba(232, 228, 223, 0.65);
+      line-height: 1.72;
+      margin-bottom: 0.75rem;
+    }
+
+    .q-source {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.54rem;
+      color: var(--muted);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    .algorética-card {
+      margin-top: 2rem;
+      background: var(--card-bg);
+      border: 1px solid rgba(197, 244, 103, 0.15);
+      border-radius: 12px;
+      padding: 2rem;
+      display: flex;
+      gap: 1.5rem;
+      align-items: flex-start;
+    }
+
+    .algorética-term {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-style: italic;
+      color: var(--accent);
+      white-space: nowrap;
+      line-height: 1;
+      padding-top: 4px;
+      flex-shrink: 0;
+    }
+
+    .algorética-def {
+      font-size: 0.92rem;
+      color: rgba(232, 228, 223, 0.62);
+      line-height: 1.78;
+    }
+
+    /* ── REFLECTION BOX ── */
+    .reflection-box {
+      background: linear-gradient(135deg, rgba(197, 244, 103, 0.04) 0%, rgba(155, 142, 196, 0.04) 100%);
+      border: 1px solid rgba(197, 244, 103, 0.14);
+      border-radius: 16px;
+      padding: 2.5rem;
+      margin-top: 2rem;
+    }
+
+    .reflection-list {
+      list-style: none;
+      counter-reset: ref;
+    }
+
+    .reflection-list li {
+      counter-increment: ref;
+      display: flex;
+      gap: 1.25rem;
+      align-items: flex-start;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .reflection-list li:last-child { border-bottom: none; padding-bottom: 0; }
+    .reflection-list li:first-child { padding-top: 0; }
+
+    .reflection-list li::before {
+      content: counter(ref, decimal-leading-zero);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.62rem;
+      color: var(--accent);
+      white-space: nowrap;
+      padding-top: 4px;
+      flex-shrink: 0;
+      letter-spacing: 0.05em;
+    }
+
+    .reflection-list li span {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      line-height: 1.58;
+    }
+
+    /* ── FOOTER ── */
+    .page-footer {
+      border-top: 1px solid var(--card-border);
+      padding: 2.5rem 2rem;
+      max-width: 780px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .footer-info {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.58rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      line-height: 1.9;
+      text-transform: uppercase;
+    }
+
+    .footer-link {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--accent);
+      text-decoration: none;
+      letter-spacing: 0.1em;
+    }
+
+    @media (max-width: 480px) {
+      .bio-card-body { flex-direction: column; gap: 1rem; }
+      .bio-card-time { text-align: left; }
+      .algorética-card { flex-direction: column; gap: 1rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- 1. HERO -->
+<section class="hero">
+  <p class="hero-tag">Unidad 3 · Cierre STEM · ARTE + DATOS</p>
+  <h1>¿Quién decide<br><em>quién es el mejor?</em></h1>
+  <p class="hero-sub">Cuando las decisiones sobre datos se vuelven decisiones algorítmicas.</p>
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <div class="scroll-arrow"></div>
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- 2. CONTEXTO -->
+<section class="section">
+  <div class="container">
+    <div class="section-label"><span>01 - La obra</span></div>
+    <h2 class="section-title">Un juego que enseña<br><em>lo que los datos ocultan</em></h2>
+    <p class="section-body">
+      A lo largo de esta unidad trabajamos con sesgos en el diseño de estudios, en la recolección de datos, en los titulares mediáticos. Sobre el final de la clase dimos un paso más: ¿qué pasa cuando ese sesgo emerge de un algoritmo que aprendió de decisiones humanas?
+    </p>
+    <p class="section-body">
+      <em>Survival of the Best Fit</em> es una obra interactiva desarrollada con apoyo de la Mozilla Foundation por estudiantes de ingeniería, diseño y tecnología de NYU Abu Dhabi. En unos pocos minutos, permite experimentar —desde adentro— cómo los sistemas de IA reproducen y amplifican los sesgos con los que fueron entrenados.
+    </p>
+
+    <div class="bio-card">
+      <div class="bio-card-sidebar"></div>
+      <div class="bio-card-body">
+        <div style="flex:1">
+          <p class="bio-card-meta">Obra interactiva · Mozilla Foundation · 2019</p>
+          <h3>Survival of the Best Fit</h3>
+          <p>Jugás como CEO de una empresa en expansión. Al principio contratás manualmente. Cuando el volumen crece, delegás en un sistema de IA. Lo que ese sistema hace con tus decisiones revela algo incómodo.</p>
+          <a href="https://www.survivalofthebestfit.com/game" target="_blank" class="card-link">→ Jugar ahora</a>
+        </div>
+        <div class="bio-card-time">~6<small>MINUTOS</small></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<hr class="divider">
+
+<!-- 3. INTERACTIVO -->
+<section class="section">
+  <div class="container">
+    <div class="section-label"><span>02 - El mecanismo</span></div>
+    <h2 class="section-title">Cómo el sesgo escala</h2>
+    <p class="section-body">El juego reproduce algo matemáticamente verificable. Cuando un sistema aprende de decisiones humanas sesgadas, no solo replica ese sesgo: lo amplifica. Tres etapas para entender por qué.</p>
+
+    <div class="demo-wrap">
+      <p class="demo-header">Simulación — sesgo en el ciclo de contratación</p>
+      <div class="demo-stages" id="demo-stages">
+        <button class="demo-stage-btn active" onclick="setStage(0)">01 — Vos decidís</button>
+        <button class="demo-stage-btn" onclick="setStage(1)">02 — La IA aprende</button>
+        <button class="demo-stage-btn" onclick="setStage(2)">03 — La IA escala</button>
+      </div>
+      <div id="demo-output"></div>
+    </div>
+  </div>
+</section>
+
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- 4. DECISIONS GRID -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-label"><span>Preguntas sobre el juego</span></div>
+    <h2 class="section-title">Para reflexionar<br><em>mientras jugás</em></h2>
+
+    <div class="decisions-grid">
+      <div class="decision-card" onclick="toggleCard(this)">
+        <p class="decision-num">01</p>
+        <h3 class="decision-title">¿Cuándo decidiste delegar en la IA?</h3>
+        <p class="decision-hint">↓ tocá para revelar</p>
+        <div class="reveal"><p>El juego diseña ese momento con cuidado: la oferta de automatización llega cuando el volumen es abrumador. Es una decisión que parece racional y eficiente. Pero ¿qué delegaste exactamente?</p></div>
+      </div>
+      <div class="decision-card" onclick="toggleCard(this)">
+        <p class="decision-num">02</p>
+        <h3 class="decision-title">¿Qué candidatos quedaron afuera y por qué?</h3>
+        <p class="decision-hint">↓ tocá para revelar</p>
+        <div class="reveal"><p>No se excluye a nadie por una decisión explícita. Se excluye a personas porque el modelo aprendió un patrón de tus elecciones anteriores. La discriminación no requiere intención para existir.</p></div>
+      </div>
+      <div class="decision-card" onclick="toggleCard(this)">
+        <p class="decision-num">03</p>
+        <h3 class="decision-title">¿El algoritmo discriminó o aprendió de vos?</h3>
+        <p class="decision-hint">↓ tocá para revelar</p>
+        <div class="reveal"><p>Técnicamente, el algoritmo no hace nada "malo": reproduce fielmente lo que aprendió. El problema está en qué fue a aprender, y en quién tomó la decisión de entrenarlo así.</p></div>
+      </div>
+      <div class="decision-card" onclick="toggleCard(this)">
+        <p class="decision-num">04</p>
+        <h3 class="decision-title">¿En qué trabajos reales ya se usa algo parecido?</h3>
+        <p class="decision-hint">↓ tocá para revelar</p>
+        <div class="reveal"><p>Selección de CVs (Amazon lo abandonó en 2018 por sesgo de género), evaluación crediticia, asignación de libertad condicional (caso COMPAS, EE.UU.), diagnósticos médicos, moderación de contenido.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="divider">
+<!-- 5. AGREGADO SOL -->
+
+<section class="section">
+  <div class="container">
+    <div class="section-label"><span>03 - Los LLM</span></div>
+    <h2 class="section-title">Un modelo de lenguaje<br><em>hablando por otros</em></h2>
+
+
+    <p class="section-body" style="margin-top:2.5rem">
+      El problema no es solo de contratación. Los modelos de lenguaje que usamos a diario —los que completan frases, generan texto, moderan contenido— también aprenden de corpus humanos llenos de sesgos históricos. Y corregirlos, una vez entrenados, es mucho más difícil de lo que parece.
+    </p>
+
+    <div class="bio-card">
+      <div class="bio-card-sidebar" style="background: linear-gradient(to bottom, var(--cool), var(--rose))"></div>
+      <div class="bio-card-body">
+        <div style="flex:1">
+          <p class="bio-card-meta">Explorable interactivo · Google PAIR · 2021</p>
+          <h3>What Have Language Models Learned?</h3>
+          <p>Usá el modelo BERT de Google para completar oraciones y observar qué asociaciones aprendió del corpus. ¿Qué profesión predice para Jim versus Jane? ¿Qué pasa si cambiás el nombre? Incluye el caso de Zari, la versión "corregida" de BERT que desplazó el sesgo en lugar de eliminarlo.</p>
+          <a href="https://pair.withgoogle.com/explorables/fill-in-the-blank/" target="_blank" class="card-link">→ Explorar ahora</a>
+        </div>
+        <div class="bio-card-time" style="font-size:1.5rem;padding-top:0.25rem">BERT<small>LIVE</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- 5. BIG QUOTE -->
+<div class="container">
+  <div class="big-quote">
+    <hr>
+    <blockquote>
+      "Está en juego la misma dignidad humana."
+    </blockquote>
+    <cite>Papa Francisco · G7 · Borgo Egnazia · 14 de junio de 2024</cite>
+    <hr class="bottom">
+  </div>
+</div>
+
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- 6. FRANCISCO -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <span class="memorial-tag">✦ En memoria del Papa Francisco · 1936–2025</span>
+    <div class="section-label"><span>04 - Aspectos éticos</span></div>
+    <h2 class="section-title">La Iglesia en el debate<br><em>sobre la IA</em></h2>
+    <p class="section-body">
+      En junio de 2024, el Papa Francisco fue el primer pontífice en participar de una cumbre del G7. El tema central era inteligencia artificial. Su intervención —técnica, ética y enraizada en la tradición humanista de la Iglesia— planteó con claridad preguntas que la ciencia de datos no puede ignorar.
+    </p>
+    <p class="section-body">
+      Francisco distinguió la IA de cualquier herramienta ordinaria. Lo formuló con precisión: <em>"Yo diría que es una herramienta sui generis."</em> A diferencia de un cuchillo, que solo hace lo que el humano le indica, un sistema de IA puede adaptarse de forma autónoma a la tarea asignada y, si se diseña de esa manera, tomar decisiones independientemente del ser humano. Esa diferencia no es técnica. Es ética.
+    </p>
+
+    <div class="quotes-grid">
+      <div class="quote-mini">
+        <p>"Condenaríamos a la humanidad a un futuro sin esperanza si quitáramos a las personas la capacidad de decidir por sí mismas y por sus vidas, condenándolas a depender de las elecciones de las máquinas."</p>
+        <span class="q-source">Discurso G7 · Borgo Egnazia · 14 jun. 2024</span>
+      </div>
+      <div class="quote-mini">
+        <p>"Necesitamos garantizar y proteger un espacio de control significativo del ser humano sobre el proceso de elección utilizado por los programas de inteligencia artificial."</p>
+        <span class="q-source">Discurso G7 · Borgo Egnazia · 14 jun. 2024</span>
+      </div>
+      <div class="quote-mini">
+        <p>"La inteligencia artificial podría traer consigo una mayor inequidad entre naciones avanzadas y naciones en vías de desarrollo [...] poniendo en peligro la posibilidad de una 'cultura del encuentro' y favoreciendo una 'cultura del descarte'."</p>
+        <span class="q-source">Discurso G7 · Borgo Egnazia · 14 jun. 2024</span>
+      </div>
+      <div class="quote-mini">
+        <p>"No podemos permitir que una herramienta tan poderosa e indispensable como la inteligencia artificial refuerce el paradigma tecnocrático, sino que más bien debemos hacer de la inteligencia artificial un baluarte precisamente contra su expansión."</p>
+        <span class="q-source">Discurso G7 · Borgo Egnazia · 14 jun. 2024</span>
+      </div>
+    </div>
+
+    <div class="algorética-card">
+      <span class="algorética-term">Algorética</span>
+      <p class="algorética-def">Término que Francisco acuñó en 2020 al firmar la <em>Rome Call for AI Ethics</em> junto a IBM y Microsoft. Propone aplicar principios éticos al diseño de algoritmos desde su origen, no como corrección posterior. La decisión ética no considera solo los resultados, sino los valores en juego y los deberes que se derivan de ellos.</p>
+    </div>
+
+    <p style="margin-top:2rem;font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--muted);letter-spacing:0.05em">
+      Discurso completo:
+      <a href="https://www.vatican.va/content/francesco/es/speeches/2024/june/documents/20240614-g7-intelligenza-artificiale.html" target="_blank" style="color:var(--accent);text-decoration:none">
+        vatican.va → Participación en el G7 sobre Inteligencia Artificial · 14 jun. 2024
+      </a>
+    </p>
+  </div>
+</section>
+
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- 7. REFLEXIÓN -->
+<section class="section" style="padding-top:0">
+  <div class="container">
+    <div class="section-label"><span>05 - Para pensar con otros</span></div>
+    <h2 class="section-title">Tres preguntas<br><em>sin respuesta fácil</em></h2>
+
+    <div class="reflection-box">
+      <ol class="reflection-list">
+        <li><span>¿Alguna vez sentiste que una plataforma “te encasilló”? ¿Qué datos creés que usó para hacerlo? Compartilo con alguien: lo que parece personal, muchas veces es estructural.</span></li>
+        <li><span>Si un sistema funciona “correctamente” pero produce resultados injustos -como viste en el juego-, ¿está fallando? ¿Quién debería auditar estos sistemas: las empresas, el Estado o los usuarios? Probá discutirlo con alguien cercano y comparen posiciones.</span></li>
+        <li><span>Francisco dice que toda tecnología lleva la visión del mundo de quien la diseñó. ¿Qué implica eso para vos, que estás aprendiendo a construir esos sistemas? ¿qué tipo de mundo querés construir con los sistemas que diseñes?¿Te animás a hablar de esto con alguien más?</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="page-footer">
+  <div class="footer-info">
+    Introducción a la Ciencia de Datos · UCA · 2026<br>
+    Unidad 3 — Cierre — Material complementario
+  </div>
+  <div class="seed">🌱</div>
+</footer>
+
+<script>
+  const stages = [
+    {
+      total: 12, typeA: 9, ratioA: 75,
+      desc: 'Contratás 12 personas de forma manual. Inconscientemente, priorizás candidatos del grupo naranja. De 12 puestos, 9 van a ese grupo.',
+      insight: 'Este sesgo puede no ser consciente. Refleja exposición, familiaridad, o simplemente a quién imaginamos en ese rol.'
+    },
+    {
+      total: 12, typeA: 9, ratioA: 75,
+      desc: 'El sistema de IA analiza tus 12 decisiones y extrae un patrón. Aprende que el candidato "exitoso" tiene características del grupo naranja.',
+      insight: 'El algoritmo no sabe qué es justo. Solo sabe qué hiciste. Si tu historial tiene sesgo, el modelo aprende ese sesgo como si fuera una regla.'
+    },
+    {
+      total: 50, typeA: 45, ratioA: 90,
+      desc: 'La empresa crece. El algoritmo procesa 50 candidatos. Ahora el 90% de los contratados son del grupo naranja. El sesgo no solo se replicó: se amplificó.',
+      insight: 'A escala, el impacto es masivo. Y nadie tomó una decisión explícitamente discriminatoria. Ese es el problema central del sesgo algorítmico.'
+    }
+  ];
+
+  let currentStage = 0;
+
+  function setStage(i) {
+    currentStage = i;
+    document.querySelectorAll('.demo-stage-btn').forEach((b, j) => b.classList.toggle('active', i === j));
+    renderDemo();
+  }
+
+  function renderDemo() {
+    const s = stages[currentStage];
+    const typeB = s.total - s.typeA;
+    let html = '<div class="cands-grid">';
+    for (let i = 0; i < s.total; i++) {
+      const isA = i < s.typeA;
+      html += `<div class="cand-dot ${isA ? 'type-warm' : 'type-cool out'}"></div>`;
+    }
+    html += `</div>
+    <div class="ratio-section">
+      <div class="ratio-labels">
+        <span>● Naranja — ${s.typeA} contratados (${s.ratioA}%)</span>
+        <span>● Azul — ${typeB} (${Math.round(100 - s.ratioA)}%)</span>
+      </div>
+      <div class="ratio-track">
+        <div class="ratio-fill" style="width:${s.ratioA}%"></div>
+      </div>
+    </div>
+    <p class="demo-desc-text">${s.desc}</p>
+    <div class="demo-insight-text">${s.insight}</div>`;
+    document.getElementById('demo-output').innerHTML = html;
+  }
+
+  renderDemo();
+
+  function toggleCard(el) {
+    const reveal = el.querySelector('.reveal');
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.decision-card').forEach(c => {
+      c.classList.remove('open');
+      c.querySelector('.reveal').style.maxHeight = '0';
+    });
+    if (!isOpen) {
+      el.classList.add('open');
+      reveal.style.maxHeight = reveal.scrollHeight + 'px';
+    }
+  }
+</script>
+<a href="../index.html" style="position:fixed;top:14px;left:14px;z-index:9999;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#e8e4df;background:rgba(10,10,12,.78);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:7px 14px;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)">← Todos los artefactos</a>
+</body>
+</html>

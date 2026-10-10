@@ -1,0 +1,1065 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Unidad 5 — El modelo no es la realidad</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,600&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0c;
+    --fg: #e8e4df;
+    --accent: #c5f467;
+    --warm: #f2a65a;
+    --cool: #7eb8da;
+    --rose: #e07a8e;
+    --violet: #9b8ec4;
+    --muted: #5a5862;
+    --card-bg: #141418;
+    --card-border: #2a2a30;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 4rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 30% 40%, rgba(197,244,103,0.07) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 60% at 70% 60%, rgba(155,142,196,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 2rem;
+    opacity: 0;
+    animation: fadeUp 0.8s 0.2s ease forwards;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.6rem, 7vw, 5.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    max-width: 800px;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.4s ease forwards;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    margin-top: 1.5rem;
+    max-width: 520px;
+    color: var(--muted);
+    font-size: 1.05rem;
+    opacity: 0;
+    animation: fadeUp 0.9s 0.6s ease forwards;
+  }
+  .scroll-cue {
+    position: absolute;
+    bottom: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    opacity: 0;
+    animation: fadeIn 1s 1.2s ease forwards;
+  }
+  .scroll-cue span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .scroll-line {
+    width: 1px;
+    height: 48px;
+    background: linear-gradient(to bottom, var(--accent), transparent);
+    animation: pulse-line 2s 1.5s ease-in-out infinite;
+  }
+
+  /* ─── LAYOUT ─── */
+  .container {
+    max-width: 780px;
+    margin: 0 auto;
+    padding: 0 2rem;
+  }
+  section { padding: 5rem 0; }
+
+  /* ─── SECTION LABEL ─── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+  }
+  .section-label span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--card-border);
+  }
+
+  /* ─── CONTEXT / BIO CARD ─── */
+  .bio-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 2rem 2rem 2rem 0;
+    display: flex;
+    gap: 0;
+    overflow: hidden;
+    position: relative;
+  }
+  .bio-card-bar {
+    width: 4px;
+    min-height: 100%;
+    background: linear-gradient(to bottom, var(--accent), var(--violet));
+    border-radius: 4px;
+    margin-right: 2rem;
+    flex-shrink: 0;
+  }
+  .bio-card-body h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+  .bio-card-body p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    line-height: 1.8;
+  }
+  .bio-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 1.2rem;
+  }
+  .bio-link {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 0.3rem 0.9rem;
+    text-decoration: none;
+    background: transparent;
+  }
+
+  /* ─── MAGRITTE INTERACTIVE ─── */
+  .magritte-stage {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    position: relative;
+  }
+  .pipe-svg-wrap {
+    display: flex;
+    justify-content: center;
+    margin: 1.5rem auto 1rem;
+  }
+  .magritte-caption {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: 1.3rem;
+    color: var(--fg);
+    margin-bottom: 1.5rem;
+    opacity: 0.85;
+  }
+  .magritte-btns {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+  }
+  .choice-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.65rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    background: transparent;
+    color: var(--fg);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .choice-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .choice-btn.yes  { border-color: var(--warm); color: var(--warm); }
+  .choice-btn.no   { border-color: var(--cool); color: var(--cool); }
+  .choice-btn.active-yes { background: rgba(242,166,90,0.15); border-color: var(--warm); }
+  .choice-btn.active-no  { background: rgba(126,184,218,0.15); border-color: var(--cool); }
+  .magritte-reveal {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s ease, opacity 0.4s ease;
+    opacity: 0;
+    text-align: left;
+  }
+  .magritte-reveal.show { max-height: 800px; opacity: 1; }
+  .reveal-inner {
+    background: rgba(197,244,103,0.05);
+    border: 1px solid rgba(197,244,103,0.15);
+    border-radius: 10px;
+    padding: 1.5rem;
+    font-size: 0.97rem;
+    line-height: 1.85;
+  }
+  .reveal-inner .reveal-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.8rem;
+    display: block;
+  }
+  .reveal-inner p { margin-bottom: 1rem; }
+  .reveal-inner p:last-child { margin-bottom: 0; }
+  .reveal-inner strong { color: var(--fg); font-weight: 500; }
+
+  /* ─── MODELO INTERACTIVO ─── */
+  .model-toggle {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+  }
+  .model-btn {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.6rem 1.4rem;
+    border-radius: 8px;
+    border: 1px solid var(--card-border);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.25s;
+  }
+  .model-btn.active-det {
+    background: rgba(242,166,90,0.12);
+    border-color: var(--warm);
+    color: var(--warm);
+  }
+  .model-btn.active-est {
+    background: rgba(126,184,218,0.12);
+    border-color: var(--cool);
+    color: var(--cool);
+  }
+  .model-panel {
+    display: none;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 2rem;
+    animation: fadeIn 0.35s ease;
+  }
+  .model-panel.visible { display: block; }
+  .model-panel h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+  }
+  .model-panel.det h3 { color: var(--warm); }
+  .model-panel.est h3 { color: var(--cool); }
+  .model-examples {
+    list-style: none;
+    margin: 1rem 0;
+  }
+  .model-examples li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--card-border);
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+  }
+  .model-examples li::before {
+    content: '→';
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    flex-shrink: 0;
+  }
+  .model-panel.det .model-examples li::before { color: var(--warm); }
+  .model-panel.est .model-examples li::before { color: var(--cool); }
+  .model-note {
+    margin-top: 1.2rem;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    line-height: 1.7;
+  }
+  .model-panel.det .model-note { background: rgba(242,166,90,0.06); color: var(--fg); }
+  .model-panel.est .model-note { background: rgba(126,184,218,0.06); color: var(--fg); }
+
+  /* ─── DECISIONS GRID ─── */
+  .decisions-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.2rem;
+  }
+  @media (max-width: 600px) { .decisions-grid { grid-template-columns: 1fr; } }
+  .decision-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+  .decision-card:hover { border-color: var(--accent); }
+  .card-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    color: var(--accent);
+    margin-bottom: 0.6rem;
+  }
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.6rem;
+    line-height: 1.3;
+  }
+  .card-question {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.65;
+  }
+  .card-hint {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.6rem;
+    color: var(--accent);
+    opacity: 0.6;
+    margin-top: 0.8rem;
+    letter-spacing: 0.1em;
+    transition: opacity 0.3s;
+  }
+  .reveal {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.45s ease, opacity 0.4s ease;
+  }
+  .reveal-text {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--card-border);
+    font-size: 0.9rem;
+    line-height: 1.75;
+    color: var(--fg);
+  }
+  .decision-card.open .reveal { max-height: 1200px; opacity: 1; }
+  .decision-card.open .card-hint { opacity: 0; }
+
+  /* ─── BIG QUOTE ─── */
+  .big-quote {
+    text-align: center;
+    padding: 3rem 0;
+    position: relative;
+  }
+  .big-quote::before, .big-quote::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 1px;
+    background: var(--card-border);
+    margin: 1.5rem auto;
+  }
+  .big-quote blockquote {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.2rem, 3vw, 1.7rem);
+    line-height: 1.55;
+    color: var(--fg);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .big-quote cite {
+    display: block;
+    margin-top: 1rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-style: normal;
+    font-size: 0.7rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+
+  /* ─── PREGUNTA CENTRAL ─── */
+  .central-question {
+    background: linear-gradient(135deg, rgba(197,244,103,0.04) 0%, rgba(155,142,196,0.06) 100%);
+    border: 1px solid rgba(197,244,103,0.12);
+    border-radius: 16px;
+    padding: 2.5rem;
+    text-align: center;
+    margin: 2rem 0;
+  }
+  .central-question p {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.45rem);
+    line-height: 1.6;
+    font-style: italic;
+  }
+  .central-question .or {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: block;
+    margin: 0.8rem 0;
+  }
+
+  /* ─── REFLECTION BOX ─── */
+  .reflection-box {
+    background: linear-gradient(135deg, rgba(197,244,103,0.04) 0%, rgba(155,142,196,0.04) 100%);
+    border: 1px solid rgba(197,244,103,0.15);
+    border-radius: 16px;
+    padding: 2.5rem;
+    counter-reset: reflection;
+  }
+  .reflection-box h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    margin-bottom: 1.8rem;
+  }
+  .reflection-list { list-style: none; }
+  .reflection-list li {
+    padding: 1.1rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: 1rem;
+    align-items: start;
+    font-size: 0.98rem;
+    line-height: 1.75;
+    counter-increment: reflection;
+  }
+  .reflection-list li:last-child { border-bottom: none; }
+  .reflection-list li::before {
+    content: counter(reflection, decimal-leading-zero);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.05em;
+    padding-top: 0.25rem;
+  }
+
+  /* ─── FOUCAULT SECTION ─── */
+  .foucault-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+  @media (max-width: 600px) { .foucault-grid { grid-template-columns: 1fr; } }
+  .foucault-node {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    padding: 1.2rem;
+    text-align: center;
+  }
+  .foucault-node .node-icon {
+    font-size: 2rem;
+    margin-bottom: 0.6rem;
+    display: block;
+  }
+  .foucault-node .node-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+  }
+  .foucault-node .node-desc {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .foucault-arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--muted);
+    font-size: 1.2rem;
+    padding-top: 2rem;
+  }
+  @media (max-width: 600px) { .foucault-arrow { padding: 0; transform: rotate(90deg); } }
+
+  /* ─── PROSE ─── */
+  .prose h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 1.2rem;
+    line-height: 1.25;
+  }
+  .prose p {
+    margin-bottom: 1.2rem;
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+  .prose p:last-child { margin-bottom: 0; }
+  .prose strong { color: var(--accent); font-weight: 500; }
+  .highlight-inline {
+    background: rgba(197,244,103,0.08);
+    border-left: 2px solid var(--accent);
+    padding: 0.8rem 1.2rem;
+    border-radius: 0 8px 8px 0;
+    margin: 1.5rem 0;
+    font-size: 0.95rem;
+  }
+
+  /* ─── DIVIDER / CONNECTOR ─── */
+  .divider { border: none; border-top: 1px solid var(--card-border); margin: 0; }
+  .connector {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 2.5rem 0;
+  }
+  .connector span {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--card-border);
+  }
+
+  /* ─── FOOTER ─── */
+  .page-footer {
+    padding: 2rem;
+    border-top: 1px solid var(--card-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .footer-info {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes pulse-line {
+    0%, 100% { opacity: 0.4; transform: scaleY(0.8); }
+    50%       { opacity: 1;   transform: scaleY(1.1); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-tag">Unidad 5 · Cierre STEM · Arte + Datos</div>
+  <h1>El modelo<br>no es <em>la realidad</em></h1>
+  <p class="hero-sub">Una pipa que no es una pipa. Un mapa que no es el territorio. Un modelo que no es un fenómeno. Entre el mundo y nuestras decisiones siempre hay representaciones.</p>
+
+
+  <div class="scroll-cue">
+    <span>Scrolleá</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ── CONTEXTO: MAGRITTE ── -->
+<div class="container">
+  <section>
+    <div class="section-label"><span>01 — Punto de partida</span></div>
+
+    <div class="bio-card">
+      <div class="bio-card-bar"></div>
+      <div class="bio-card-body">
+        <h3>René Magritte — La traición de las imágenes (1929)</h3>
+        <p>Magritte pintó una pipa con una precisión casi fotográfica. Debajo escribió: <em>"Ceci n'est pas une pipe"</em> ("Esto no es una pipa"). La obra es un escándalo conceptual que lleva casi un siglo incomodando a quienes la miran. Y tiene mucho para enseñarle a la Ciencia de Datos.</p>
+        <div class="bio-links">
+          <span class="bio-link">Surrealismo belga</span>
+          <span class="bio-link">Filosofía del lenguaje</span>
+          <span class="bio-link">Representación</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- OBRA + INTERACCIÓN -->
+    <div style="margin-top: 2.5rem;">
+
+      <!-- Bloque editorial: evocación tipográfica de la obra -->
+      <div style="background:#d4c5a9;border-radius:12px 12px 0 0;padding:3.5rem 2rem 2.5rem;display:flex;flex-direction:column;align-items:center;gap:1.8rem;position:relative;">
+
+        <!-- Etiqueta museo arriba a la derecha -->
+        <a href="https://collections.lacma.org/node/239578" target="_blank"
+           style="position:absolute;top:1rem;right:1rem;font-family:'JetBrains Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;color:#6b5740;text-decoration:none;border:1px solid rgba(107,87,64,0.35);border-radius:20px;padding:0.25rem 0.75rem;opacity:0.8;">
+          Ver obra original ↗
+        </a>
+
+        <!-- Pipa dibujada en CSS / SVG limpio y honestamente esquemático -->
+        <svg viewBox="0 0 500 180" xmlns="http://www.w3.org/2000/svg"
+             style="width:100%;max-width:480px;display:block;">
+
+          <!-- Bowl: cuerpo principal -->
+          <rect x="60" y="30" width="88" height="108" rx="12" ry="12"
+                fill="#6b3f1a" stroke="#4a2a0a" stroke-width="2"/>
+          <!-- Bowl: interior oscuro -->
+          <rect x="72" y="42" width="64" height="78" rx="8" ry="8"
+                fill="#3a1e08"/>
+          <!-- Bowl: aro superior -->
+          <ellipse cx="104" cy="32" rx="44" ry="9"
+                   fill="#7a4820" stroke="#4a2a0a" stroke-width="1.5"/>
+          <!-- Bowl: base -->
+          <ellipse cx="104" cy="136" rx="47" ry="10"
+                   fill="#7a4820" stroke="#4a2a0a" stroke-width="1.5"/>
+          <!-- Bowl: highlight lateral -->
+          <path d="M72 50 Q72 35 90 32" stroke="rgba(220,180,120,0.25)"
+                stroke-width="4" stroke-linecap="round" fill="none"/>
+
+          <!-- Caño: tubo -->
+          <path d="M148 122 Q210 128 270 108 Q340 84 420 74"
+                stroke="#6b3f1a" stroke-width="26" stroke-linecap="round" fill="none"/>
+          <!-- Caño: highlight superior -->
+          <path d="M148 113 Q212 119 272 99 Q342 75 422 65"
+                stroke="#8a5530" stroke-width="10" stroke-linecap="round" fill="none" opacity="0.45"/>
+          <!-- Caño: línea fina de brillo -->
+          <path d="M148 110 Q215 116 275 96 Q345 72 424 62"
+                stroke="rgba(230,195,130,0.18)" stroke-width="3"
+                stroke-linecap="round" fill="none"/>
+
+          <!-- Boquilla -->
+          <ellipse cx="424" cy="69" rx="10" ry="6"
+                   fill="#4a2a0a" transform="rotate(-15 424 69)"/>
+        </svg>
+
+        <!-- Texto caligráfico -->
+        <p style="font-family:'Playfair Display',serif;font-style:italic;
+                  font-size:clamp(1.15rem,3.8vw,1.75rem);
+                  color:#3d2810;letter-spacing:0.02em;margin:0;text-align:center;">
+          Ceci n'est pas une pipe.
+        </p>
+
+        <!-- Crédito -->
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;
+                  letter-spacing:0.12em;text-transform:uppercase;
+                  color:#7a6248;margin:0;text-align:center;">
+          René Magritte — La trahison des images, 1929 · LACMA, Los Ángeles
+        </p>
+      </div>
+
+      <!-- Panel interactivo debajo -->
+      <div style="background:var(--card-bg);border-radius:0 0 12px 12px;border:1px solid var(--card-border);border-top:none;padding:1.8rem 2rem;">
+        <p style="color:var(--muted);font-size:0.88rem;margin-bottom:1.2rem;text-align:center;">
+          ¿Magritte tiene razón? Elegí una opción antes de seguir.
+        </p>
+        <div class="magritte-btns">
+          <button class="choice-btn yes" onclick="choosePipe('yes')">Sí, es una pipa</button>
+          <button class="choice-btn no"  onclick="choosePipe('no')">No, tiene razón</button>
+        </div>
+        <div class="magritte-reveal" id="pipe-reveal">
+          <div class="reveal-inner" id="pipe-reveal-text"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<hr class="divider">
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- ── FOUCAULT ── -->
+<div class="container">
+  <section>
+    <div class="section-label"><span>02 — El problema de la representación</span></div>
+
+    <div class="prose">
+      <h2>Un problema que tiene una larga historia</h2>
+      <p>La provocación de Magritte no termina en los museos. Su obra plantea una pregunta que va más allá de la pintura: ¿qué relación existe entre las palabras, las imágenes y las cosas que intentan representar?</p>
+    </div>
+
+    <div class="foucault-grid">
+      <div class="foucault-node">
+        <span class="node-icon">🪬</span>
+        <div class="node-label">La cosa</div>
+        <div class="node-desc">La pipa real. Existe en el mundo. Podés llenarla de tabaco, sentir su peso, olerla.</div>
+      </div>
+      <div class="foucault-node">
+        <span class="node-icon">🖼</span>
+        <div class="node-label">La imagen</div>
+        <div class="node-desc">La representación visual. Captura la forma pero no el objeto. No podés usarla.</div>
+      </div>
+      <div class="foucault-node">
+        <span class="node-icon">🔤</span>
+        <div class="node-label">La palabra</div>
+        <div class="node-desc">"Pipa". Un símbolo arbitrario: en inglés es pipe, en alemán Pfeife. Distinto sonido, mismo vacío.</div>
+      </div>
+    </div>
+
+
+    <div class="prose">
+      <p>La pregunta sobre la <strong>representatividad</strong> no es nueva ni exclusiva del arte. La relación entre las representaciones y las cosas que intentan representar es uno de los problemas más trabajados de la historia del pensamiento y aparece en disciplinas muy distintas.</p>
+    </div>
+
+    <!-- Grid de tradiciones -->
+    <div style="display:flex;flex-direction:column;gap:0.8rem;margin:1.8rem 0;">
+
+      <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:1.3rem 1.5rem;display:grid;grid-template-columns:140px 1fr;gap:1.2rem;align-items:start;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);margin-bottom:0.3rem;">Filosofía · 1973</div>
+          <div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;">Michel Foucault</div>
+        </div>
+        <p style="font-size:0.9rem;color:var(--muted);line-height:1.75;">En <em>Esto no es una pipa</em>, señala que la pintura occidental tenía dos convenciones simultáneas: la imagen debe <em>parecerse</em> a la cosa, y el texto debe <em>nombrarla</em>. Magritte hace colapsar las dos al mismo tiempo — y eso es lo que vuelve a la obra tan perturbadora.</p>
+      </div>
+
+      <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:1.3rem 1.5rem;display:grid;grid-template-columns:140px 1fr;gap:1.2rem;align-items:start;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--cool);margin-bottom:0.3rem;">Lingüística · 1916</div>
+          <div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;">Ferdinand de Saussure</div>
+        </div>
+        <p style="font-size:0.9rem;color:var(--muted);line-height:1.75;">Mostró que la relación entre una palabra y lo que nombra es arbitraria: no hay nada en el sonido "pipa" que la conecte naturalmente con el objeto. En inglés es <em>pipe</em>, en alemán <em>Pfeife</em>. La conexión es convención, no naturaleza.</p>
+      </div>
+
+      <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:1.3rem 1.5rem;display:grid;grid-template-columns:140px 1fr;gap:1.2rem;align-items:start;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--violet);margin-bottom:0.3rem;">Semiótica · s. XIX–XX</div>
+          <div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;">Charles S. Peirce</div>
+        </div>
+        <p style="font-size:0.9rem;color:var(--muted);line-height:1.75;">Clasificó los tipos de signos según cómo se relacionan con lo que representan: por semejanza (icono), por contigüidad (índice) o por convención pura (símbolo). Una fotografía de una pipa y la palabra "pipa" son representaciones de tipos completamente distintos.</p>
+      </div>
+
+      <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:1.3rem 1.5rem;display:grid;grid-template-columns:140px 1fr;gap:1.2rem;align-items:start;">
+        <div>
+          <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--warm);margin-bottom:0.3rem;">General Semántica · 1931</div>
+          <div style="font-family:'Playfair Display',serif;font-size:0.95rem;font-weight:700;">Alfred Korzybski</div>
+        </div>
+        <p style="font-size:0.9rem;color:var(--muted);line-height:1.75;">Acuñó la frase que resume todo esto: <em>"El mapa no es el territorio."</em> Una representación nunca es idéntica a aquello que representa — siempre omite, distorsiona o simplifica. Y confundir el mapa con el territorio es una fuente constante de errores.</p>
+      </div>
+
+    </div>
+
+    <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:1.8rem;margin-top:0.5rem;">
+      <p style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--accent);margin-bottom:0.8rem;">Lo que importa llevarse</p>
+      <p style="font-size:0.95rem;line-height:1.8;">La Ciencia de Datos no inventó el problema de la representación. Se encontró con él. Lingüistas, filósofos, semióticos y epistemólogos llevan más de un siglo trabajando la pregunta de cómo los signos se relacionan con el mundo. Cuando construimos un modelo predictivo, entramos — aunque no lo sepamos — en esa conversación.</p>
+      <p style="font-size:0.9rem;color:var(--muted);line-height:1.75;margin-top:0.8rem;">Y la pregunta que esas tradiciones no terminan de resolver sigue abierta para nosotros también: si ninguna representación es la cosa, ¿por qué funcionan? ¿Por qué un modelo que simplifica la realidad puede, aun así, predecirla?</p>
+    </div>
+
+  </section>
+</div>
+
+<hr class="divider">
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- ── PUENTE A CIENCIA DE DATOS ── -->
+<div class="container">
+  <section>
+    <div class="section-label"><span>03 — El puente</span></div>
+
+    <div class="prose">
+      <h2>Un modelo predictivo tampoco es la realidad</h2>
+      <p>Magritte nos mostró que la imagen de una pipa no es una pipa. Y en Ciencia de Datos la situación es todavía más compleja, porque entre la realidad y nuestros modelos no hay una sola capa de representación, sino dos.</p>
+      <p>La primera capa ocurre antes de cualquier modelo: cuando observamos un fenómeno, lo medimos y lo registramos como <strong>dato </strong>, ya estamos tomando decisiones que simplifican. Decidimos qué observar y qué ignorar, qué escala usar, qué unidad de medida, con qué frecuencia registrar. El dato no es la realidad, es una lectura parcial de ella, filtrada por los instrumentos, los criterios y los propósitos de quien mide. Un precio de vivienda registrado en una base de datos no es el mercado inmobiliario: es un número, en una moneda, en una fecha, bajo ciertas condiciones que el dato no captura.</p>
+      <p>La segunda capa es el <strong>modelo</strong>. Sobre esos datos ya simplificados, construimos una representación matemática. Un modelo no describe el mercado inmobiliario, aunque lo usemos para tomar decisiones sobre este. Describe una relación entre ciertas variables medidas de cierta manera en cierto período. </p>
+
+    </div>
+
+    <!-- Tarjetas de ejemplos -->
+    <div style="display:flex; flex-direction:column; gap:0.8rem; margin:1.5rem 0;">
+      <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:1.2rem;display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--warm);letter-spacing:0.1em;">REGRESIÓN</span>
+        <span style="font-size:0.95rem;">Una recta de regresión <strong style="color:var(--fg)">no es el mercado inmobiliario</strong>, es una representación de la relación entre variables.</span>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:1.2rem;display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--cool);letter-spacing:0.1em;">CLASIFICACIÓN</span>
+        <span style="font-size:0.95rem;">Un árbol de decisión <strong style="color:var(--fg)">no es el proceso real de otorgamiento de créditos</strong>, es una frontera de decisión simplificada.</span>
+      </div>
+      <div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:10px;padding:1.2rem;display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:center;">
+        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--violet);letter-spacing:0.1em;">REDES NEURONALES</span>
+        <span style="font-size:0.95rem;">Una red neuronal <strong style="color:var(--fg)">no es un cerebro</strong>, es una arquitectura matemática inspirada vagamente en uno.</span>
+      </div>
+    </div>
+
+    <div class="prose">
+      <p>Por eso construir un modelo siempre implica decisiones explícitas: qué variables incluir, cuáles descartar, qué forma funcional asumir, qué nivel de detalle conservar, qué período tomar como referencia. Esas decisiones no son neutras. Cada una es una elección sobre qué aspectos de la realidad importan y cuáles no. Un modelo no intenta copiar el mundo. Intenta hacerlo <strong>inteligible para un propósito específico</strong>. </p>
+    </div>
+    
+  </section>
+</div>
+
+<hr class="divider">
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- ── DETERMINÍSTICO VS ESTOCÁSTICO ── -->
+<div class="container">
+  <section>
+    <div class="section-label"><span>04 — Dos formas de modelar</span></div>
+
+    <div class="prose" style="margin-bottom:2rem;">
+      <h2> La incertidumbre en la representación</h2>
+      <p>Toda representación es incompleta por construcción. Eso ya lo establecimos.</p>
+      <p>Pero antes de seguir, podemos hacernos una pregunta más. Cuando un modelo no logra predecir algo con certeza, ¿por qué ocurre? En otras palabras, ¿qué lugar ocupa la <strong>incertidumbre </strong> en esa <strong>representación</strong>? </p>
+      <p>En todo <strong>fenómeno complejo </strong> coexisten al menos dos fuentes de incertidumbre. Una viene de los límites de nuestra representación: nos faltan variables, datos, precisión en la medición. Esa es reducible, al menos en parte, ya que mejores datos o mejores modelos pueden achicarla. 
+        La otra viene de la complejidad estructural del fenómeno mismo: tantas variables interactuando simultáneamente, condiciones iniciales imposibles de medir con exactitud, agentes que modifican su comportamiento según el contexto y según quién los observa. Esa no desaparece con más datos ni con modelos más sofisticados. Es una propiedad de la escala y la interacción, no un defecto de nuestra representación.</p>
+
+      <p>El juicio profesional está en encontrar el nivel de simplificación pertinente para cada fenómeno en un contexto de análisis, determinando qué papel debe ocupar la incertidumbre en su representación. Ni más, ni menos. No se trata de capturar el fenómeno en toda su complejidad (que excede cualquier voluntad de representación), sino de construir una representación suficientemente buena para el propósito que se tiene.</p>
+      <p>Dos grandes familias de modelos trabajan la incertidumbre de forma distinta. Tocá cada una para explorar cómo.</p>
+    </div>
+
+    <div class="model-toggle">
+      <button class="model-btn" id="btn-det" onclick="showModel('det')">⟡ Determinístico</button>
+      <button class="model-btn" id="btn-est" onclick="showModel('est')">◎ Estocástico</button>
+    </div>
+
+    <div class="model-panel det" id="panel-det">
+      <h3>Determinístico — ignorar la incertidumbre es pertinente</h3>
+      <p style="font-size:0.95rem;color:var(--muted);margin-bottom:1rem;">Asume que la incertidumbre presente en el fenómeno es suficientemente pequeña como para ignorarla sin perder pertinencia. Dadas las mismas condiciones, el modelo siempre produce el mismo resultado. Es una decisión de simplificación válida cuando el fenómeno está bien acotado, las variables son pocas y conocidas, y el margen de error aceptable es bajo.</p>
+      <div style="background:rgba(242,166,90,0.06);border:1px solid rgba(242,166,90,0.15);border-radius:10px;padding:1.2rem;margin-bottom:1rem;">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--warm);margin-bottom:0.5rem;">Ejemplo</p>
+        <p style="font-size:0.92rem;line-height:1.75;margin-bottom:0.5rem;">La ley de gravitación de Newton. Dadas la masa y la distancia, la fuerza gravitatoria es siempre la misma. El modelo es determinístico y pertinente dentro de un rango acotado de condiciones (velocidades bajas, masas no extremas, dos cuerpos interactuando).</p>
+        <p style="font-size:0.88rem;color:var(--muted);line-height:1.75;">Newton no describió cómo realmente ES la gravedad. Construyó una representación extremadamente buena para explicar cómo se comportan los cuerpos en determinadas condiciones. Cuando Einstein amplió el rango de condiciones que quería explicar, el modelo de Newton dejó de ser pertinente y fue necesario otro modelo matemático con un mayor nivel de complejidad.</p>
+      </div>
+      <div class="model-note">
+        <strong style="color:var(--warm)">El fenómeno puede describirse sin recurrir a probabilidades.</strong> Un modelo determinístico no es una afirmación sobre cómo es el mundo. Es una decisión de simplificación que dice: para este fenómeno, en estas condiciones, con este propósito, puedo representar su comportamiento sin incorporar explícitamente la incertidumbre y aun así obtener una representación pertinente.
+      </div>
+    </div>
+
+    <div class="model-panel est" id="panel-est">
+      <h3>Estocástico — la incertidumbre se modela, no se ignora</h3>
+      <p style="font-size:0.95rem;color:var(--muted);margin-bottom:1rem;">Incorpora explícitamente la incertidumbre como parte del output. La decisión de simplificación reconoce que ignorar la incertidumbre no sería pertinente para ese fenómeno y ese propósito. El modelo no dice "va a pasar X" — dice "hay un 70% de probabilidad de que pase X". Cuando la incertidumbre es relevante para comprender el fenómeno, representarla explícitamente puede resultar más útil que ocultarla detrás de una respuesta aparentemente exacta.</p>
+      <div style="background:rgba(126,184,218,0.06);border:1px solid rgba(126,184,218,0.15);border-radius:10px;padding:1.2rem;margin-bottom:1rem;">
+        <p style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--cool);margin-bottom:0.5rem;">Ejemplo</p>
+        <p style="font-size:0.92rem;line-height:1.75;margin-bottom:0.5rem;">Predicción de abandono de clientes (churn). El comportamiento humano involucra tantas variables interactuando (contexto económico, experiencia de uso, alternativas disponibles) que asumir un resultado determinístico no sería pertinente. El modelo incorpora esa incertidumbre: no dice "este cliente se va", dice "este cliente tiene 73% de probabilidades de abandonar en los próximos 30 días".</p>
+        <p style="font-size:0.88rem;color:var(--muted);line-height:1.75;">Esa probabilidad permite tomar decisiones (intervenir con ese cliente, priorizar recursos, etc) sin pretender una certeza que el fenómeno no permite.</p>
+      </div>
+      <div class="model-note">
+        <strong style="color:var(--cool)">La incertidumbre forma parte de la representación.</strong> Para ese fenómeno y ese propósito, una representación pertinente la incertidumbre se incorpora explícitamente al resultado en forma de probabilidades.
+      </div>
+    </div>
+  </section>
+</div>
+
+<hr class="divider">
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- ── TARJETAS DESPLEGABLES ── -->
+<div class="container">
+  <section>
+    <div class="section-label"><span>05 — Para pensar</span></div>
+
+    <div class="prose" style="margin-bottom:2rem;">
+      <h2>Cuatro preguntas que no tienen una sola respuesta</h2>
+      <p style="color:var(--muted);">Tocá cada tarjeta para ver lo que aparece. No son respuestas correctas, son perspectivas que conviven.</p>
+    </div>
+
+    <div class="decisions-grid">
+      <div class="decision-card" onclick="toggleCard(this)">
+        <div class="card-num">01</div>
+        <div class="card-title">¿Cuándo un modelo es suficientemente bueno?</div>
+        <div class="card-question">Siempre se puede seguir mejorando un modelo. ¿Cómo sabés cuándo parar?</div>
+        <div class="card-hint">↓ tocá para revelar</div>
+        <div class="reveal">
+          <div class="reveal-text">La respuesta no es técnica, es contextual. Un modelo es suficientemente bueno cuando cumple el propósito para el que fue construido, dentro de los recursos disponibles y con un margen de error aceptable para ese uso específico. Eso implica tres preguntas que hay que hacerse antes de construir: ¿para qué sirve este modelo?, ¿quién lo va a usar y en qué condiciones?, ¿qué consecuencias tiene equivocarse?</div>
+        </div>
+      </div>
+
+      <div class="decision-card" onclick="toggleCard(this)">
+        <div class="card-num">02</div>
+        <div class="card-title">¿Qué perdemos cuando simplificamos?</div>
+        <div class="card-question">Todo modelo deja cosas afuera. ¿Cuándo eso es un problema?</div>
+        <div class="card-hint">↓ tocá para revelar</div>
+        <div class="reveal">
+          <div class="reveal-text">Siempre perdemos algo cuando modelamos, eso es inevitable. La pregunta es qué perdemos y si importa para el propósito del modelo. Un modelo de precios de casas que ignora el ruido del barrio puede ser excelente para predecir el valor medio; pero si aplicamos ese modelo a decisiones de vivienda pública, estamos ignorando algo que sí importa. El problema empieza cuando apelamos a una simplificación, sin saber qué estamos simplificando y para qué fin.</div>
+        </div>
+      </div>
+
+      <div class="decision-card" onclick="toggleCard(this)">
+        <div class="card-num">03</div>
+        <div class="card-title">¿Qué significa que un modelo "funcione"?</div>
+        <div class="card-question">Un modelo puede tener buenas métricas y aun así fallar. ¿Cómo evaluamos si realmente funciona?</div>
+        <div class="card-hint">↓ tocá para revelar</div>
+        <div class="reveal">
+          <div class="reveal-text">Las métricas de evaluación (accuracy, RMSE, F1-score, etc) miden el desempeño del modelo, pero "funcionar" en el mundo real es otra cosa. Un modelo puede tener excelente accuracy sobre el conjunto de entrenamiento y fallar sistemáticamente en producción porque el mundo cambió, porque los datos de entrenamiento no eran representativos, o porque el problema que resuelve no era el problema que había que resolver.</div>
+        </div>
+      </div>
+
+      <div class="decision-card" onclick="toggleCard(this)" style="border-color:rgba(155,142,196,0.3);">
+        <div class="card-num" style="color:var(--violet);">04</div>
+        <div class="card-title">¿Los modelos describen o construyen la realidad?</div>
+        <div class="card-question">Un modelo de riesgo crediticio ¿refleja el comportamiento o lo produce?</div>
+        <div class="card-hint">↓ tocá para revelar</div>
+        <div class="reveal">
+          <div class="reveal-text">Esta es la tensión más interesante y la más incómoda. Un modelo que decide si una persona recibe crédito no solo refleja un patrón histórico: también lo refuerza hacia el futuro. Si el modelo aprendió que cierto barrio tiene más incumplimientos históricos y por eso niega créditos a quienes viven ahí, esas personas no pueden acceder a capital, sus negocios no crecen, los incumplimientos se mantienen altos, y el modelo queda "validado". Está construyendo la realidad que pretende describir.En economía y sociología económica, esta idea se conoce como <strong>performatividad</strong>: los modelos pueden influir sobre el comportamiento de las personas y terminar modificando la realidad que pretendían describir.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+
+<hr class="divider">
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- ── CIERRE CONCEPTUAL ── -->
+<div class="container">
+  <section>
+    <div class="section-label"><span>06 — La pregunta que queda abierta</span></div>
+
+    <div class="central-question">
+      <p>¿El mundo es determinístico y nosotros somos ignorantes?</p>
+      <span class="or">— o —</span>
+      <p>¿El mundo contiene incertidumbre genuina?</p>
+    </div>
+
+    <div class="prose">
+      <p>Durante siglos, gran parte de la ciencia estuvo guiada por una idea poderosa: si lográbamos comprender las leyes que gobiernan la naturaleza, podríamos explicar y predecir los fenómenos con precisión. Los movimientos de los planetas, la caída de los cuerpos o las trayectorias de los proyectiles parecían mostrar que el mundo seguía reglas estables y predecibles.</p>
+      <p>Sin embargo, durante el siglo XX comenzaron a surgir distintas miradas que cuestionaron la idea de una representación perfecta del mundo. Mientras artistas como René Magritte y filósofos como Michel Foucault reflexionaban sobre la distancia entre las cosas y sus representaciones, nuevos desarrollos científicos mostraban que algunos fenómenos eran mucho más complejos de lo que se pensaba. La teoría del caos reveló que pequeñas variaciones podían producir grandes diferencias en los resultados, y la mecánica cuántica incorporó la probabilidad en la descripción de ciertos fenómenos físicos.</p>
+      <p>La Ciencia de Datos convive con esa tensión. Algunos modelos buscan representar los fenómenos mediante relaciones determinísticas; otros incorporan explícitamente la incertidumbre en forma de probabilidades. Ninguno es el fenómeno mismo.</p>
+      <p>Magritte nos recuerda que una representación no es aquello que representa. Los modelos de Ciencia de Datos también son representaciones: simplifican ciertos aspectos de los fenómenos para poder comprenderlos, describirlos o anticiparlos.</p>
+      <p>Y si los modelos no son el fenómeno, entonces la forma en que los construimos, los usamos y los creemos importa mucho más de lo que parece.</p>
+    </div>
+
+    <div class="big-quote">
+      <blockquote>"Un mapa no es el territorio. Una representación no es aquello que representa."</blockquote>
+      <cite> Alfred Korzybski, ingeniero y matemático</cite>
+    </div>
+  </section>
+</div>
+
+<hr class="divider">
+<div class="connector"><span></span><span></span><span></span></div>
+
+<!-- ── REFLEXIÓN ── -->
+<div class="container">
+  <section>
+    <div class="section-label"><span>07 — Para seguir pensando</span></div>
+
+    <div class="reflection-box">
+      <h2>Preguntas para llevar fuera del aula</h2>
+      <p style="color:var(--muted);font-size:0.9rem;margin-bottom:1.5rem;">Empezá por las primeras que son más personales y más fáciles de arrancar. Las últimas son más difíciles, pero más interesantes para conversar con alguien de otra carrera.</p>
+      <ol class="reflection-list">
+        <li>¿Qué diferencia existe entre una persona y su perfil digital? Si alguien accediera a todos tus datos, ¿cuánto creés que podría llegar a conocerte?</li>
+        <li>¿Un algoritmo de recomendación representa tus gustos o contribuye a construirlos? ¿Escuchás lo que te gusta o te gusta lo que escuchás?</li>
+        <li>Si alguien conociera toda tu historia, tus hábitos y tu contexto actual, ¿podría anticipar tu próxima decisión importante? ¿O siempre existe un margen para la sorpresa?</li>
+        <li>Cuando un modelo expresa probabilidades en lugar de certezas, ¿te parece menos confiable o más honesto? ¿Qué te inspira más confianza: una respuesta exacta o una que reconoce sus límites?</li>
+        <li>¿La incertidumbre es una limitación de nuestros modelos o una característica inevitable del mundo? Si existiera un modelo perfecto, ¿qué cosas de la experiencia humana seguirían quedando afuera?</li>
+      </ol>
+    </div>
+  </section>
+</div>
+
+<!-- ── FOOTER ── -->
+<footer class="page-footer">
+  <div class="footer-info">
+    INTRODUCCIÓN A LAS CIENCIAS DE DATOS · UCA · 2026<br>
+    UNIDAD 5 - CIERRE - MATERIAL COMPLEMENTARIO<br>
+  </div>
+  <span style="font-size:1.6rem;">🧠</span>
+</footer>
+
+<script>
+  const pipeAnswers = {
+    yes: {
+      label: "Intuición válida — pero Magritte la desafía",
+      paras: [
+        `Tiene sentido pensarlo así. Sin embargo, Magritte propone una prueba simple: <strong>intentá llenar esta pipa de tabaco.</strong> No podés. No hay ningún objeto físico acá — hay tinta sobre tela (o píxeles en una pantalla) organizados de una forma que tu cerebro reconoce como pipa.`,
+        `Vemos la imagen y decimos "es una pipa" cuando en realidad deberíamos decir "representa una pipa". Son dos afirmaciones muy distintas, aunque en la práctica cotidiana nunca nos molestemos en hacer esa distinción.`,
+        `Y acá está el movimiento que importa para la materia: cuando construimos un modelo de precios de propiedades y lo llamamos "el mercado inmobiliario", estamos haciendo exactamente lo mismo. El modelo <em>parece</em> el mercado. Funciona como si fuera el mercado. Pero no lo es. Y esa diferencia tiene consecuencias muy concretas cuando el modelo falla en casos que nadie anticipó.`
+      ]
+    },
+    no: {
+      label: "Exactamente lo que quería Magritte",
+      paras: [
+        `La imagen no es la cosa. Es una <strong>representación</strong> de la cosa. Podés reconocerla, describirla, razonar sobre ella — pero no podés llenarla de tabaco, ni tocar su peso, ni olerla. Magritte pone en crisis algo que solemos dar por supuesto: que las imágenes y las palabras tienen una conexión directa con las cosas. No la tienen. Son sistemas simbólicos con sus propias reglas.`,
+        `La imagen captura la forma visible pero no el objeto. La palabra "pipa" es un sonido arbitrario que distintas culturas nombraron distinto (pipe, Pfeife, pipa...). Y sin embargo ambas funcionan: nos permiten comunicar, reconocer, razonar. Funcionan <em>a pesar</em> de no ser la cosa.`,
+        `Los modelos de Ciencia de Datos también funcionan así: capturan ciertos aspectos de la realidad — no toda la realidad — y con eso alcanzan para hacer predicciones útiles. Una recta de regresión no es el mercado inmobiliario, pero puede ayudarte a estimar el precio de una casa. La pregunta siempre es: ¿qué quedó afuera? ¿Importa para lo que necesitamos hacer?`
+      ]
+    }
+  };
+
+  function choosePipe(choice) {
+    document.querySelectorAll('.choice-btn').forEach(b => b.classList.remove('active-yes','active-no'));
+    document.querySelector(`.choice-btn.${choice}`).classList.add(choice === 'yes' ? 'active-yes' : 'active-no');
+
+    const ans  = pipeAnswers[choice];
+    const text = document.getElementById('pipe-reveal-text');
+    text.innerHTML = `<span class="reveal-title">${ans.label}</span>` +
+      ans.paras.map(p => `<p>${p}</p>`).join('');
+
+    document.getElementById('pipe-reveal').classList.add('show');
+  }
+
+  function showModel(type) {
+    const panels = document.querySelectorAll('.model-panel');
+    const btns   = document.querySelectorAll('.model-btn');
+    panels.forEach(p => p.classList.remove('visible'));
+    btns.forEach(b => b.classList.remove('active-det','active-est'));
+
+    document.getElementById(`panel-${type}`).classList.add('visible');
+    document.getElementById(`btn-${type}`).classList.add(`active-${type}`);
+  }
+
+  function toggleCard(el) {
+    el.classList.toggle('open');
+  }
+</script>
+<a href="../index.html" style="position:fixed;top:14px;left:14px;z-index:9999;font-family:'JetBrains Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#e8e4df;background:rgba(10,10,12,.78);border:1px solid rgba(255,255,255,.14);border-radius:999px;padding:7px 14px;text-decoration:none;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)">← Todos los artefactos</a>
+</body>
+</html>
